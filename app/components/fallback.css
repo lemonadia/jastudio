@@ -1,0 +1,18 @@
+.fallback {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fallback__inner {
+  text-align: center;
+}
+
+.fallback__title {
+  margin-bottom: 1rem;
+}
+
+.fallback__text {
+  color: #666;
+}

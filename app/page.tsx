@@ -1,16 +1,29 @@
-import { sanityFetch } from "@/sanity/lib/fetch";
-import { postsQuery } from "@/sanity/lib/queries";
-import { SanityDocument } from "next-sanity";
-import Posts from "./components/Posts";
-import Menu from "./components/Menu";
+import { sanityFetch } from '@/sanity/lib/fetch'
+import { homePageQuery } from '@/sanity/lib/queries'
+import HomePage from './components/HomePage'
+import './components/fallback.css'
 
 export default async function Home() {
-  const posts = await sanityFetch<SanityDocument[]>({ query: postsQuery });
+  const home = await sanityFetch({ query: homePageQuery })
+
+  if (!home?.image) {
+    return (
+      <main className="fallback">
+        <div className="fallback__inner">
+          <h1 className="fallback__title">No home page</h1>
+          <p className="fallback__text">
+            Create a &quot;Home Page&quot; in Sanity Studio and add an image.
+          </p>
+        </div>
+      </main>
+    )
+  }
 
   return (
-    <main className="max-w-7xl min-h-screen mx-auto px-4">
-      <Menu />
-      <Posts posts={posts} />
-    </main>
-  );
+    <HomePage
+      image={home.image}
+      text={home.text}
+      logo={home.logo}
+    />
+  )
 }

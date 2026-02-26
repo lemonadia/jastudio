@@ -1,21 +1,71 @@
-import { SanityDocument } from "@sanity/client";
-import { postPathsQuery, postQuery } from "@/sanity/lib/queries";
-import { sanityFetch } from "@/sanity/lib/fetch";
-import { client } from "@/sanity/lib/client";
-import Post from "../components/Post";
+import type { Metadata } from 'next'
+import { sanityFetch } from '@/sanity/lib/fetch'
+import { pageQuery, pagePathsQuery } from '@/sanity/lib/queries'
+import { client } from '@/sanity/lib/client'
+import { urlForImage } from '@/sanity/lib/image'
+import BlockRenderer from '../components/Blocks/BlockRenderer'
+import { notFound } from 'next/navigation'
 
-export const revalidate = 60;
+export const revalidate = 60
 
 export async function generateStaticParams() {
-  const posts = await client.fetch(postPathsQuery);
-  return posts
+  const pages = await client.fetch(pagePathsQuery)
+  return pages.map((page: { slug: string }) => ({
+    slug: page.slug,
+  }))
 }
 
-const PostPage = async ({ params }: { params: any }) => {
-  const post = await sanityFetch<SanityDocument>({ query: postQuery, params })
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const page = await sanityFetch({
+    query: pageQuery,
+    params: { slug },
+  })
+  if (!page) return {}
+
+  const title = page.seoTitle || page.title
+  const description = page.seoDescription || undefined
+  const imageUrl = page.seoImage ? urlForImage(page.seoImage) : undefined
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description: description || undefined,
+      images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: page.seoImage?.alt }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: description || undefined,
+      images: imageUrl ? [imageUrl] : [],
+    },
+  }
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const page = await sanityFetch({
+    query: pageQuery,
+    params: { slug },
+  })
+
+  if (!page) {
+    notFound()
+  }
+
   return (
-    <Post post={post} />
+    <main className={slug === 'about-us' ? 'page-about-us' : undefined}>
+      {page.blocks && <BlockRenderer blocks={page.blocks} />}
+    </main>
   )
 }
-
-export default PostPage

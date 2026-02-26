@@ -18,18 +18,17 @@ export async function sanityFetch<QueryResponse>({
   params?: QueryParams;
   tags?: string[];
 }): Promise<QueryResponse> {
-  const isDraftMode = draftMode().isEnabled;
+  const { isEnabled: isDraftMode } = await draftMode();
   if (isDraftMode && !token) {
     throw new Error(
       "The `SANITY_API_READ_TOKEN` environment variable is required."
     );
   }
-  const isDevelopment = process.env.NODE_ENV === "development";
 
   return client
-    .withConfig({ useCdn: true })
+    .withConfig({ useCdn: false })
     .fetch<QueryResponse>(query, params, {
-      cache: isDevelopment || isDraftMode ? undefined : "force-cache",
+      cache: "no-store",
       ...(isDraftMode && {
         token: token,
         perspective: "previewDrafts",

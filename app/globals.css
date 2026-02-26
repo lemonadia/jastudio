@@ -1,3 +1,109 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Local font */
+@font-face {
+  font-family: 'Aime';
+  src: url('/fonts/Aime-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Global */
+:root {
+  --color-bg: #fcfaf1;
+  --color-text: #211f21;
+  --ease-bezier: cubic-bezier(0.5, 0, 0, 1);
+  --header-height: 95px;
+}
+
+html {
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 300;
+}
+
+body {
+  font-family: "xanti-typewriter-variable", sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.container {
+  width: 100%;
+  padding-right: 20px;
+  padding-left: 20px;
+  max-width: none;
+
+}
+
+h2, h3 {
+  text-transform: uppercase;
+  font-weight: 350;
+}
+
+/* Spacing between content blocks */
+.blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.blocks > *:last-child {
+  margin-bottom: 160px;
+}
+
+/* Cover wrap – aspect-ratio box (e.g. for images/video) */
+.cover-wrap {
+  display: block;
+  height: 0;
+  overflow: hidden;
+  position: relative;
+  /* padding-bottom: 56.25%; 16:9 */
+  padding-bottom: 75%; /* 4:3 */
+}
+
+.cover-wrap--square {
+  padding-bottom: 100%;
+}
+
+/* 454×366 px ratio */
+.cover-wrap--454x366 {
+  padding-bottom: 80.616%; /* 366/454 */
+}
+
+/* 268.2×244.18 px ratio (e.g. gallery) */
+.cover-wrap--268x244 {
+  padding-bottom: 91.041%; /* 244.18/268.2 */
+}
+
+.cover-wrap > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Page transition – gentle fade on route change */
+.page-transition {
+  animation: pageFadeIn 0.5s var(--ease-bezier);
+}
+
+/* Subpages: content below fixed header */
+body.page--subpage .page-transition {
+  padding-top: calc(var(--header-height) + 40px);
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

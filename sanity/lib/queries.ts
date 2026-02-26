@@ -1,21 +1,72 @@
-import { groq } from "next-sanity";
+import { groq } from "next-sanity"
 
-// Get all posts
-export const postsQuery = groq`*[_type == "post"] {
-  _createdAt,
+// Home page (singleton)
+export const homePageQuery = groq`*[_type == "homePage"][0]{
+  image,
+  text,
+  logo
+}`
+
+// Page by slug (blocks + SEO)
+export const pageQuery = groq`*[_type == "page" && slug.current == $slug][0]{
+  _id,
   title,
   slug,
-  mainImage,
-  "imageURL": mainImage.asset->url,
-  "authorName": author->name,
-}`;
+  seoTitle,
+  seoDescription,
+  seoImage,
+  blocks[]{
+    _type,
+    _type == "textImage" => {
+      title,
+      text,
+      smallText,
+      imagePosition,
+      media[]{
+        image
+      },
+      links[]{
+        label,
+        linkType,
+        url,
+        "slug": internalRef->slug.current
+      }
+    },
+    _type == "textBlock" => {
+      heading,
+      body,
+      links[]{
+        label,
+        linkType,
+        url,
+        email,
+        "slug": internalRef->slug.current,
+        "fileUrl": file.asset->url
+      },
+      alignment
+    },
+    _type == "gallery" => {
+      items[]{
+        "imageURL": image.asset->url,
+        "alt": image.alt
+      }
+    }
+  }
+}`
 
-// Get a single post by its slug
-export const postQuery = groq`*[_type == "post" && slug.current == $slug][0]{ 
-    title, description, mainImage, body
-  }`;
+export const pagePathsQuery = groq`*[_type == "page" && defined(slug.current)][]{
+  "slug": slug.current
+}`
 
-// Get all post slugs
-export const postPathsQuery = groq`*[_type == "post" && defined(slug.current)][]{
-    "params": { "slug": slug.current }
-  }`;
+// Navigation (singleton)
+export const navigationQuery = groq`*[_type == "navigation"][0]{
+  leftLinks[]{
+    label,
+    "slug": page->slug.current,
+    "title": page->title
+  },
+  rightLinks[]{
+    label,
+    url
+  }
+}`
