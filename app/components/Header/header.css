@@ -214,6 +214,12 @@
   overflow: hidden;
 }
 
+@media (max-width: 767px) {
+  .body-menu-open .header {
+    color: #fff;
+  }
+}
+
 @media (min-width: 768px) {
   .header__overlay {
     pointer-events: none;
