@@ -79,7 +79,7 @@ export default defineType({
                 Rule.custom((email, context) => {
                   const parent = context?.parent as { linkType?: string }
                   if (parent?.linkType === 'email' && !email) return 'Required for email link'
-                  if (parent?.linkType === 'email' && email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Enter a valid email'
+                  if (parent?.linkType === 'email' && email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) return 'Enter a valid email'
                   return true
                 }),
             },
