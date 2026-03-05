@@ -47,7 +47,9 @@ export async function generateMetadata({
     openGraph: {
       title,
       description: description || undefined,
-      images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: typeof page.seoImage?.alt === 'string' ? page.seoImage.alt : undefined }] : [],
+      images: imageUrl
+        ? [{ url: imageUrl, width: 1200, height: 630, alt: (page.seoImage?.alt as string | undefined) ?? undefined }]
+        : [],
     },
     twitter: {
       card: 'summary_large_image',
