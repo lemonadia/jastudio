@@ -5,6 +5,11 @@ import Header from "./components/Header/Header";
 import PageTransition from "./components/PageTransition";
 import "./globals.css";
 
+type NavData = {
+  leftLinks?: { label?: string | null; slug?: string | null; title?: string | null }[] | null;
+  rightLinks?: { label: string; url: string }[] | null;
+};
+
 export const metadata: Metadata = {
   title: "Next.js + Sanity",
   description: "Next.js application with Sanity CMS",
@@ -15,7 +20,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const nav = await sanityFetch({ query: navigationQuery });
+  const nav = await sanityFetch<NavData | null>({ query: navigationQuery });
 
   return (
     <html lang="en">
