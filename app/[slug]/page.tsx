@@ -30,12 +30,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const page = await sanityFetch<PageData | null>({
+  const raw = await sanityFetch<PageData | null>({
     query: pageQuery,
     params: { slug },
   })
-  if (!page) return {}
+  if (!raw) return {}
 
+  const page = raw as PageData
   const title = page.seoTitle || page.title
   const description = page.seoDescription || undefined
   const imageUrl = page.seoImage ? urlForImage(page.seoImage) : undefined

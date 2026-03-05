@@ -10,5 +10,9 @@ const imageBuilder = createImageUrlBuilder({
 
 export const urlForImage = (source: Image | undefined) => {
   if (!source?.asset) return undefined
-  return imageBuilder?.image(source).auto('format').fit('max').url()
+  return imageBuilder
+    ?.image(source)
+    .format('webp')
+    .fit('max')
+    .url()
 }
