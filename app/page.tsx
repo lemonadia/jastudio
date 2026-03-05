@@ -1,10 +1,18 @@
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { homePageQuery } from '@/sanity/lib/queries'
 import HomePage from './components/HomePage'
+import type { Image as SanityImage } from 'sanity'
+import type { PortableTextBlock } from '@portabletext/types'
 import './components/fallback.css'
 
+type HomePageData = {
+  image?: SanityImage | null
+  text?: PortableTextBlock[]
+  logo?: SanityImage | null
+} | null
+
 export default async function Home() {
-  const home = await sanityFetch({ query: homePageQuery })
+  const home = await sanityFetch<HomePageData>({ query: homePageQuery })
 
   if (!home?.image) {
     return (
