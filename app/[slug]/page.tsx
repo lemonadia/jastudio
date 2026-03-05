@@ -3,8 +3,17 @@ import { sanityFetch } from '@/sanity/lib/fetch'
 import { pageQuery, pagePathsQuery } from '@/sanity/lib/queries'
 import { client } from '@/sanity/lib/client'
 import { urlForImage } from '@/sanity/lib/image'
+import type { Image as SanityImage } from 'sanity'
 import BlockRenderer from '../components/Blocks/BlockRenderer'
 import { notFound } from 'next/navigation'
+
+type PageData = {
+  title?: string
+  seoTitle?: string
+  seoDescription?: string
+  seoImage?: SanityImage | null
+  blocks?: unknown[]
+}
 
 export const revalidate = 60
 
@@ -21,7 +30,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const page = await sanityFetch({
+  const page = await sanityFetch<PageData | null>({
     query: pageQuery,
     params: { slug },
   })
@@ -54,7 +63,7 @@ export default async function Page({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const page = await sanityFetch({
+  const page = await sanityFetch<PageData | null>({
     query: pageQuery,
     params: { slug },
   })
