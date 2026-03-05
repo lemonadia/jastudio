@@ -25,7 +25,6 @@ export default defineType({
       name: 'smallText',
       title: 'Small text',
       type: 'text',
-      options: { rows: 6 },
     }),
     defineField({
       name: 'media',
