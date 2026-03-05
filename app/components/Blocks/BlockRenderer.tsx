@@ -2,7 +2,7 @@ import TextImage from './TextImage'
 import TextBlock from './TextBlock'
 import Gallery from './Gallery'
 
-interface Block {
+export interface Block {
   _type: 'textImage' | 'textBlock' | 'gallery'
   [key: string]: unknown
 }

@@ -4,7 +4,7 @@ import { pageQuery, pagePathsQuery } from '@/sanity/lib/queries'
 import { client } from '@/sanity/lib/client'
 import { urlForImage } from '@/sanity/lib/image'
 import type { Image as SanityImage } from 'sanity'
-import BlockRenderer from '../components/Blocks/BlockRenderer'
+import BlockRenderer, { type Block } from '../components/Blocks/BlockRenderer'
 import { notFound } from 'next/navigation'
 
 type PageData = {
@@ -12,7 +12,7 @@ type PageData = {
   seoTitle?: string
   seoDescription?: string
   seoImage?: SanityImage | null
-  blocks?: unknown[]
+  blocks?: Block[]
 }
 
 export const revalidate = 60
