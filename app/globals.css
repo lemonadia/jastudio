@@ -31,10 +31,11 @@ body {
   color: var(--color-text);
 }
 
-/* Video: cover na cały kontener wszędzie */
+/* Video: cover na cały kontener, bez postera */
 mux-player {
   --media-object-fit: cover;
   --media-object-position: center;
+  --media-poster-image-display: none;
 }
 
 .container {

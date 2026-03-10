@@ -220,17 +220,12 @@
   color: white;
   font-size: 15px;
   z-index: 100;
-  max-width: 90%;
-  line-height: 1.5;
+  width: 100%;
+
+  line-height: 1;
 }
 
-.header__overlay-text p {
-  margin: 0 0 0.5em;
-}
 
-.header__overlay-text p:last-child {
-  margin-bottom: 0;
-}
 
 .body-menu-open {
   overflow: hidden;
