@@ -21,15 +21,13 @@
   color: #fff;
 }
 
-/* Desktop: autohide on scroll down, slide back on scroll up */
-@media (min-width: 768px) {
-  .header {
-    transition: transform 0.8s var(--ease-bezier);
-  }
+/* Autohide on scroll down, slide back on scroll up */
+.header {
+  transition: transform 0.8s var(--ease-bezier);
+}
 
-  .header.header--hidden {
-    transform: translateY(-100%);
-  }
+.header.header--hidden {
+  transform: translateY(-100%);
 }
 
 .header__center {
@@ -55,8 +53,10 @@
   font-weight: 350;
 }
 
-.header__link:hover {
-  text-decoration: underline;
+@media (min-width: 768px) {
+  .header__link:hover {
+    text-decoration: underline;
+  }
 }
 
 .header__link-num {
@@ -204,7 +204,7 @@
 .header__link-text {
   text-transform: uppercase;
   letter-spacing: 0.025em;
-  font-size: 30px;
+  font-size: 29px;
   font-family: 'Aime', sans-serif;
   font-weight: 400;
   color: #FCFAF1;

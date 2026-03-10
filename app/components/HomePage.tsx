@@ -36,6 +36,8 @@ export default function HomePage({ image, text, logo }: HomePageProps) {
               alt={logo.alt as string || 'Logo'}
               width={280}
               height={120}
+              sizes="140px"
+              quality={95}
               priority
             />
           </div>
