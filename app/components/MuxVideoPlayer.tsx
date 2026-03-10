@@ -3,7 +3,7 @@
 import MuxPlayer from '@mux/mux-player-react'
 
 interface MuxVideoPlayerProps {
-  playbackId: string
+  playbackId: string | null | undefined
   className?: string
   style?: React.CSSProperties
   poster?: string

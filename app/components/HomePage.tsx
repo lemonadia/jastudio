@@ -24,7 +24,7 @@ export default function HomePage({ image, video, text, logo }: HomePageProps) {
 
   return (
     <main className="home-page">
-      {hasVideo && (
+      {hasVideo && video.playbackId && (
         <div className="home-page__bg home-page__bg--video">
           <MuxVideoPlayer
             playbackId={video.playbackId}
