@@ -28,16 +28,10 @@ export default async function Home() {
   }
 
   return (
-    <>
-      <HomePage
-        image={home.image}
-        text={home.text}
-        logo={home.logo}
-      />
-      {/* DEBUG - usuń po sprawdzeniu */}
-      <div style={{ position: 'fixed', bottom: 10, right: 10, background: 'black', color: 'lime', padding: '4px 8px', fontSize: 11, zIndex: 9999 }}>
-        projectId: {process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}
-      </div>
-    </>
+    <HomePage
+      image={home.image}
+      text={home.text}
+      logo={home.logo}
+    />
   )
 }

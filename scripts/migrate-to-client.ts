@@ -1,13 +1,25 @@
 /**
  * Migrate content from old project (nok9of5b) to client project (jdi6zc8z)
- *
- * Run: npx tsx scripts/migrate-to-client.ts
- *
- * Requires: SANITY_API_WRITE_TOKEN for the CLIENT project (jdi6zc8z)
- * Create it in: manage.sanity.io → project jdi6zc8z → API → Tokens
+ * Run: npm run migrate:sanity
+ * Requires: SANITY_API_WRITE_TOKEN in .env.local
  */
 
 import { createClient } from 'next-sanity'
+import { readFileSync, existsSync } from 'fs'
+import { resolve } from 'path'
+
+// Load .env.local
+const envPath = resolve(process.cwd(), '.env.local')
+if (existsSync(envPath)) {
+  readFileSync(envPath, 'utf8').split('\n').forEach((line) => {
+    const match = line.match(/^([^#=]+)=(.*)$/)
+    if (match) {
+      const key = match[1].trim()
+      const val = match[2].trim().replace(/^["']|["']$/g, '')
+      if (!process.env[key]) process.env[key] = val
+    }
+  })
+}
 
 const OLD_PROJECT = 'nok9of5b'
 const CLIENT_PROJECT = 'jdi6zc8z'
