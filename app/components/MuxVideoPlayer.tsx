@@ -45,7 +45,7 @@ export default function MuxVideoPlayer({
         ['--media-object-position' as string]: 'center',
         ...style,
       }}
-      poster={poster}
+      poster=""
     />
   )
 }

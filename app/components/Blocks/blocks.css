@@ -248,15 +248,12 @@
   strong {
     font-weight: 350;
   }
-
-
 }
 
 .text-block__body a {
   text-transform: uppercase;
   text-decoration: underline;
 }
-
 
 .text-block__body a:hover {
   opacity: 0.8;
