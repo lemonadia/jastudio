@@ -221,7 +221,6 @@
   font-size: 15px;
   z-index: 100;
   width: 100%;
-
   line-height: 1;
 }
 
@@ -234,7 +233,9 @@
 @media (max-width: 1279px) {
   .body-menu-open .header {
     color: #fff;
-    background-color: transparent;
+    background-color: rgba(69, 72, 75, 0.97);
+
+
   }
 }
 
