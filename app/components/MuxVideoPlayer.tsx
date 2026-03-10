@@ -18,9 +18,9 @@ export default function MuxVideoPlayer({
   className,
   style,
   poster,
-  muted = false,
-  autoPlay = false,
-  loop = false,
+  muted = true,
+  autoPlay = true,
+  loop = true,
   objectFit = 'cover',
 }: MuxVideoPlayerProps) {
   if (!playbackId) return null
@@ -39,7 +39,10 @@ export default function MuxVideoPlayer({
       style={{
         width: '100%',
         height: '100%',
-        objectFit,
+        objectFit: 'cover',
+        ['--controls' as string]: 'none',
+        ['--media-object-fit' as string]: 'cover',
+        ['--media-object-position' as string]: 'center',
         ...style,
       }}
       poster={poster}

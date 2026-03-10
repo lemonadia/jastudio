@@ -31,6 +31,12 @@ body {
   color: var(--color-text);
 }
 
+/* Video: cover na cały kontener wszędzie */
+mux-player {
+  --media-object-fit: cover;
+  --media-object-position: center;
+}
+
 .container {
   width: 100%;
   padding-right: 20px;
