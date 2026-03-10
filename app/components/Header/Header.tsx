@@ -33,6 +33,7 @@ export default function Header({ nav }: HeaderProps) {
   const [headerHidden, setHeaderHidden] = useState(false)
   const lastScrollY = useRef(0)
   const isHome = pathname === '/'
+  const isStudio = pathname.startsWith('/studio')
 
   const leftLinks = nav?.leftLinks ?? []
   const rightLinks = nav?.rightLinks ?? []
@@ -43,9 +44,9 @@ export default function Header({ nav }: HeaderProps) {
   }, [menuOpen])
 
   useEffect(() => {
-    document.body.classList.toggle('page--subpage', !isHome)
+    document.body.classList.toggle('page--subpage', !isHome && !isStudio)
     return () => document.body.classList.remove('page--subpage')
-  }, [isHome])
+  }, [isHome, isStudio])
 
   useEffect(() => {
     const onScroll = () => {
@@ -66,10 +67,12 @@ export default function Header({ nav }: HeaderProps) {
   const toggleMenu = () => setMenuOpen((o) => !o)
   const closeMenu = () => setMenuOpen(false)
 
+  if (isStudio) return null
+
   return (
     <>
       <header
-        className={`header${isHome ? ' header--home' : ''}${headerHidden && !isHome ? ' header--hidden' : ''}`}
+        className={`header${isHome ? ' header--home' : ''}${headerHidden ? ' header--hidden' : ''}`}
       >
         <div className="header__left header__nav">
           {leftLinks.map((item, i) =>
