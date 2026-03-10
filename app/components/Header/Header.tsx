@@ -69,7 +69,7 @@ export default function Header({ nav }: HeaderProps) {
   return (
     <>
       <header
-        className={`header${isHome ? ' header--home' : ''}${headerHidden ? ' header--hidden' : ''}`}
+        className={`header${isHome ? ' header--home' : ''}${headerHidden && !isHome ? ' header--hidden' : ''}`}
       >
         <div className="header__left header__nav">
           {leftLinks.map((item, i) =>
