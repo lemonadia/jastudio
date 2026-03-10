@@ -67,7 +67,7 @@ async function migrateAssets() {
   console.log('Fetching documents from client project...')
   const docs = await readClient.fetch('*[!(_id in path("_.**"))]')
   const refs = new Set<string>()
-  docs.forEach((doc) => extractAssetRefs(doc, refs))
+  docs.forEach((doc: unknown) => extractAssetRefs(doc, refs))
   console.log(`Found ${refs.size} image references`)
 
   if (refs.size === 0) {
