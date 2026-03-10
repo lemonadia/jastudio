@@ -3,16 +3,13 @@
 import React, { useCallback, useRef, useState } from 'react'
 import imageCompression from 'browser-image-compression'
 import { Card, Dialog, Flex, Button, Spinner, Text } from '@sanity/ui'
+import type { AssetSourceComponentProps } from '@sanity/types'
 
 function StripMetadataUpload({
   onSelect,
   onClose,
-  assetType,
-}: {
-  onSelect: (assets: Array<{ kind: string; value: File; assetDocumentProps?: { originalFilename: string } }>) => void
-  onClose: () => void
-  assetType: 'image' | 'file'
-}) {
+  assetType = 'image',
+}: AssetSourceComponentProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -36,13 +33,8 @@ function StripMetadataUpload({
           type: compressed.type,
           lastModified: Date.now(),
         })
-        onSelect([
-          {
-            kind: 'file',
-            value: stripped,
-            assetDocumentProps: { originalFilename: file.name },
-          },
-        ])
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onSelect([{ kind: 'file', value: stripped, assetDocumentProps: { originalFilename: file.name } } as any])
         onClose()
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to process image')

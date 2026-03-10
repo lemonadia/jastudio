@@ -36,9 +36,10 @@ export default defineType({
             },
           },
           validation: (Rule) =>
-            Rule.custom((item) =>
-              !item?.image && !item?.video ? 'Add an image or video.' : true
-            ),
+            Rule.custom((item) => {
+              const i = item as { image?: unknown; video?: unknown }
+              return !i?.image && !i?.video ? 'Add an image or video.' : true
+            }),
         },
       ],
       validation: (Rule) => Rule.min(1).max(5).required(),
