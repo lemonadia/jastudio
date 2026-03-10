@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate:sanity": "tsx scripts/migrate-to-client.ts"
+    "migrate:sanity": "tsx scripts/migrate-to-client.ts",
+    "migrate:assets": "tsx scripts/migrate-assets.ts"
   },
   "dependencies": {
     "@portabletext/react": "^6.0.2",
