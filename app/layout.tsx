@@ -20,7 +20,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const nav = await sanityFetch<NavData | null>({ query: navigationQuery });
+  let nav: NavData | null = null;
+  try {
+    nav = await sanityFetch<NavData | null>({ query: navigationQuery });
+  } catch {
+    // Sanity error – continue without nav
+  }
 
   return (
     <html lang="en">

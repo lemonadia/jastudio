@@ -18,10 +18,14 @@ type PageData = {
 export const revalidate = 60
 
 export async function generateStaticParams() {
-  const pages = await client.fetch(pagePathsQuery)
-  return pages.map((page: { slug: string }) => ({
-    slug: page.slug,
-  }))
+  try {
+    const pages = await client.fetch(pagePathsQuery)
+    return (pages || []).map((page: { slug: string }) => ({
+      slug: page.slug,
+    }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({
