@@ -21,6 +21,11 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'video',
+      title: 'Video (alternative to image)',
+      type: 'mux.video',
+    }),
+    defineField({
       name: 'text',
       title: 'Text',
       type: 'blockContent',
@@ -41,7 +46,10 @@ export default defineType({
       ],
     }),
   ],
-  validation: (Rule) => Rule.custom((doc) => (!doc?.image ? 'Add an image.' : true)),
+  validation: (Rule) =>
+    Rule.custom((doc) =>
+      !doc?.image && !doc?.video ? 'Add an image or video.' : true
+    ),
   preview: {
     prepare() {
       return {

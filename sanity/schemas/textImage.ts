@@ -41,13 +41,25 @@ export default defineType({
               options: { hotspot: true },
               fields: [{ name: 'alt', type: 'string', title: 'Alternative text' }],
             },
+            {
+              name: 'video',
+              title: 'Video (alternative to image)',
+              type: 'mux.video',
+            },
           ],
           preview: {
-            select: { media: 'image' },
-            prepare({ media }) {
-              return { title: 'Image', media }
+            select: { media: 'image', video: 'video' },
+            prepare({ media, video }) {
+              return {
+                title: video ? 'Video' : 'Image',
+                media,
+              }
             },
           },
+          validation: (Rule) =>
+            Rule.custom((item) =>
+              !item?.image && !item?.video ? 'Add an image or video.' : true
+            ),
         },
       ],
       validation: (Rule) => Rule.min(1).max(3).required(),

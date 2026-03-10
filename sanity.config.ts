@@ -8,6 +8,8 @@ import {structureTool, type StructureBuilder} from 'sanity/structure'
 // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
 import {apiVersion, dataset, projectId} from './sanity/env'
 import {schema} from './sanity/schema'
+import {stripMetadataUploadSource} from './sanity/plugins/strip-metadata-upload'
+import {muxInput} from 'sanity-plugin-mux-input'
 
 export default defineConfig({
   basePath: '/studio',
@@ -15,6 +17,12 @@ export default defineConfig({
   dataset,
   apiVersion,
   schema,
+  form: {
+    image: {
+      directUploads: false,
+      assetSources: (prev) => [stripMetadataUploadSource, ...prev],
+    },
+  },
   plugins: [
     structureTool({
       structure: (S: StructureBuilder) =>
@@ -42,5 +50,6 @@ export default defineConfig({
           ]),
     }),
     visionTool({defaultApiVersion: apiVersion}),
+    muxInput(),
   ],
 })

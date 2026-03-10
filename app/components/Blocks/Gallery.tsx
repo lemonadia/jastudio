@@ -1,9 +1,16 @@
 import Image from 'next/image'
+import MuxVideoPlayer from '../MuxVideoPlayer'
 import './blocks.css'
+
+interface GalleryVideo {
+  playbackId?: string | null
+  status?: string
+}
 
 interface GalleryItem {
   imageURL?: string | null
   alt?: string | null
+  video?: GalleryVideo | null
 }
 
 interface GalleryProps {
@@ -19,7 +26,14 @@ export default function Gallery({ items }: GalleryProps) {
         <div className="gallery__grid">
           {items.map((item, index) => (
             <figure key={index} className="gallery__item">
-              {item.imageURL ? (
+              {item.video?.playbackId && item.video?.status === 'ready' ? (
+                <div className="gallery__video cover-wrap cover-wrap--268x244">
+                  <MuxVideoPlayer
+                    playbackId={item.video.playbackId}
+                    objectFit="cover"
+                  />
+                </div>
+              ) : item.imageURL ? (
                 <div className="gallery__image cover-wrap cover-wrap--268x244">
                   <Image
                     src={item.imageURL}

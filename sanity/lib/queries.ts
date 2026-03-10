@@ -3,6 +3,11 @@ import { groq } from "next-sanity"
 // Home page (singleton)
 export const homePageQuery = groq`*[_type == "homePage"][0]{
   image,
+  "video": video.asset->{
+    playbackId,
+    assetId,
+    status
+  },
   text,
   logo
 }`
@@ -23,7 +28,12 @@ export const pageQuery = groq`*[_type == "page" && slug.current == $slug][0]{
       smallText,
       imagePosition,
       media[]{
-        image
+        image,
+        "video": video.asset->{
+          playbackId,
+          assetId,
+          status
+        }
       },
       links[]{
         label,
@@ -48,7 +58,12 @@ export const pageQuery = groq`*[_type == "page" && slug.current == $slug][0]{
     _type == "gallery" => {
       items[]{
         "imageURL": image.asset->url,
-        "alt": image.alt
+        "alt": image.alt,
+        "video": video.asset->{
+          playbackId,
+          assetId,
+          status
+        }
       }
     }
   }

@@ -3,20 +3,39 @@ import { PortableText } from '@portabletext/react'
 import { urlForImage } from '@/sanity/lib/image'
 import type { Image as SanityImage } from 'sanity'
 import type { PortableTextBlock } from '@portabletext/types'
+import MuxVideoPlayer from './MuxVideoPlayer'
 import './home-page.css'
+
+interface MuxVideo {
+  playbackId?: string | null
+  status?: string
+}
 
 interface HomePageProps {
   image?: SanityImage | null
+  video?: MuxVideo | null
   text?: PortableTextBlock[]
   logo?: SanityImage | null
 }
 
-export default function HomePage({ image, text, logo }: HomePageProps) {
+export default function HomePage({ image, video, text, logo }: HomePageProps) {
   const imageUrl = image && urlForImage(image)
+  const hasVideo = video?.playbackId && video?.status === 'ready'
 
   return (
     <main className="home-page">
-      {imageUrl && (
+      {hasVideo && (
+        <div className="home-page__bg home-page__bg--video">
+          <MuxVideoPlayer
+            playbackId={video.playbackId}
+            muted
+            autoPlay
+            loop
+            objectFit="cover"
+          />
+        </div>
+      )}
+      {!hasVideo && imageUrl && (
         <div className="home-page__bg">
           <Image
             src={imageUrl}

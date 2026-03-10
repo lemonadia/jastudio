@@ -2,10 +2,17 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { urlForImage } from '@/sanity/lib/image'
 import type { Image as SanityImage } from 'sanity'
+import MuxVideoPlayer from '../MuxVideoPlayer'
 import './blocks.css'
+
+interface MuxVideo {
+  playbackId?: string | null
+  status?: string
+}
 
 interface MediaItem {
   image?: SanityImage | null
+  video?: MuxVideo | null
 }
 
 interface LinkItem {
@@ -19,7 +26,7 @@ interface TextImageProps {
   title?: string
   text?: string
   smallText?: string
-  media?: { image?: SanityImage | null }[]
+  media?: { image?: SanityImage | null; video?: MuxVideo | null }[]
   imagePosition: 'left' | 'right'
   links?: LinkItem[]
 }
@@ -57,7 +64,12 @@ export default function TextImage({
               <div className={`text-image__media ${mediaMod}`}>
                 {media?.map((item, index) => (
                   <div key={index} className={itemWrapClass}>
-                    {item?.image && urlForImage(item.image) ? (
+                    {item?.video?.playbackId && item?.video?.status === 'ready' ? (
+                      <MuxVideoPlayer
+                        playbackId={item.video.playbackId}
+                        objectFit="cover"
+                      />
+                    ) : item?.image && urlForImage(item.image) ? (
                       <Image
                         src={urlForImage(item.image)!}
                         alt={typeof item.image.alt === 'string' ? item.image.alt : ''}
@@ -150,7 +162,12 @@ export default function TextImage({
               <div className={`text-image__media ${mediaMod}`}>
                 {media?.map((item, index) => (
                   <div key={index} className={itemWrapClass}>
-                    {item?.image && urlForImage(item.image) ? (
+                    {item?.video?.playbackId && item?.video?.status === 'ready' ? (
+                      <MuxVideoPlayer
+                        playbackId={item.video.playbackId}
+                        objectFit="cover"
+                      />
+                    ) : item?.image && urlForImage(item.image) ? (
                       <Image
                         src={urlForImage(item.image)!}
                         alt={typeof item.image.alt === 'string' ? item.image.alt : ''}
