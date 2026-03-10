@@ -4,6 +4,10 @@ export default defineType({
   name: 'homePage',
   title: 'Home Page',
   type: 'document',
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'seo', title: 'SEO' },
+  ],
   fields: [
     defineField({
       name: 'image',
@@ -12,6 +16,7 @@ export default defineType({
       options: {
         hotspot: true,
       },
+      group: 'content',
       fields: [
         {
           name: 'alt',
@@ -24,11 +29,13 @@ export default defineType({
       name: 'video',
       title: 'Video (alternative to image)',
       type: 'mux.video',
+      group: 'content',
     }),
     defineField({
       name: 'text',
       title: 'Text',
       type: 'blockContent',
+      group: 'content',
     }),
     defineField({
       name: 'logo',
@@ -37,6 +44,7 @@ export default defineType({
       options: {
         hotspot: true,
       },
+      group: 'content',
       fields: [
         {
           name: 'alt',
@@ -44,6 +52,26 @@ export default defineType({
           title: 'Alternative text',
         },
       ],
+    }),
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO Title',
+      type: 'string',
+      group: 'seo',
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO Description',
+      type: 'text',
+      group: 'seo',
+    }),
+    defineField({
+      name: 'seoImage',
+      title: 'SEO Image',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [{ name: 'alt', type: 'string', title: 'Alternative text' }],
+      group: 'seo',
     }),
   ],
   validation: (Rule) =>

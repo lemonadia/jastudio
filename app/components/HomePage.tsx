@@ -48,10 +48,10 @@ export default function HomePage({ image, video, text, logo }: HomePageProps) {
         </div>
       )}
       <div className="home-page__content">
-        {logo && urlForImage(logo) && (
+        {logo && urlForImage(logo, { skipWebp: true }) && (
           <div className="home-page__logo">
             <Image
-              src={urlForImage(logo)!}
+              src={urlForImage(logo, { skipWebp: true })!}
               alt={logo.alt as string || 'Logo'}
               width={280}
               height={120}

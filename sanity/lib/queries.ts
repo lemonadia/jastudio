@@ -9,7 +9,10 @@ export const homePageQuery = groq`*[_type == "homePage"][0]{
     status
   },
   text,
-  logo
+  logo,
+  seoTitle,
+  seoDescription,
+  seoImage
 }`
 
 // Page by slug (blocks + SEO)

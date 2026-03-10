@@ -8,11 +8,11 @@ const imageBuilder = createImageUrlBuilder({
   dataset: dataset || '',
 })
 
-export const urlForImage = (source: Image | undefined) => {
+export const urlForImage = (
+  source: Image | undefined,
+  options?: { skipWebp?: boolean }
+) => {
   if (!source?.asset) return undefined
-  return imageBuilder
-    ?.image(source)
-    .format('webp')
-    .fit('max')
-    .url()
+  const builder = imageBuilder?.image(source).fit('max')
+  return (options?.skipWebp ? builder : builder?.format('webp'))?.url()
 }

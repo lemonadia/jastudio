@@ -45,7 +45,10 @@ export default defineConfig({
               ),
             S.divider(),
             ...S.documentTypeListItems().filter(
-              (item) => item.getId() && item.getId() !== 'homePage' && item.getId() !== 'navigation'
+              (item) => {
+                const id = item.getId()
+                return id && id !== 'homePage' && id !== 'navigation' && id !== 'mux.videoAsset'
+              }
             ),
           ]),
     }),

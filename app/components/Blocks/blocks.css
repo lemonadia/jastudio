@@ -176,7 +176,7 @@
 
 @media (min-width: 768px) {
   .text-image__link:hover {
-    text-decoration: none;
+    opacity: 0.8;
   }
 }
 
@@ -324,6 +324,6 @@
 }
 @media (min-width: 768px) {
   .text-block__link:hover {
-    text-decoration: none;
+    opacity: 0.8;
   }
 }
