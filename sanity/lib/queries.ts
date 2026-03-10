@@ -8,6 +8,11 @@ export const homePageQuery = groq`*[_type == "homePage"][0]{
     assetId,
     status
   },
+  "videoMobile": videoMobile.asset->{
+    playbackId,
+    assetId,
+    status
+  },
   text,
   logo,
   seoTitle,
@@ -86,5 +91,6 @@ export const navigationQuery = groq`*[_type == "navigation"][0]{
   rightLinks[]{
     label,
     url
-  }
+  },
+  mobileText
 }`

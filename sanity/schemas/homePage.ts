@@ -32,6 +32,12 @@ export default defineType({
       group: 'content',
     }),
     defineField({
+      name: 'videoMobile',
+      title: 'Video (mobile)',
+      type: 'mux.video',
+      group: 'content',
+    }),
+    defineField({
       name: 'text',
       title: 'Text',
       type: 'blockContent',

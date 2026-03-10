@@ -7,7 +7,7 @@ export default defineType({
   fields: [
     defineField({
       name: 'leftLinks',
-      title: 'Left links',
+      title: 'Left items',
       type: 'array',
       of: [
         {
@@ -37,7 +37,7 @@ export default defineType({
     }),
     defineField({
       name: 'rightLinks',
-      title: 'Right links',
+      title: 'Right items',
       type: 'array',
       of: [
         {
@@ -54,6 +54,11 @@ export default defineType({
           },
         },
       ],
+    }),
+    defineField({
+      name: 'mobileText',
+      title: 'Mobile Text',
+      type: 'blockContent',
     }),
   ],
   preview: {

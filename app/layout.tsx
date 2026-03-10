@@ -8,6 +8,7 @@ import "./globals.css";
 type NavData = {
   leftLinks?: { label?: string | null; slug?: string | null; title?: string | null }[] | null;
   rightLinks?: { label: string; url: string }[] | null;
+  mobileText?: import('@portabletext/types').PortableTextBlock[] | null;
 };
 
 export const metadata: Metadata = {

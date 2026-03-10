@@ -15,6 +15,7 @@ type MuxVideo = {
 type HomePageData = {
   image?: SanityImage | null
   video?: MuxVideo | null
+  videoMobile?: MuxVideo | null
   text?: PortableTextBlock[]
   logo?: SanityImage | null
   seoTitle?: string | null
@@ -70,6 +71,7 @@ export default async function Home() {
     <HomePage
       image={home.image}
       video={home.video}
+      videoMobile={home.videoMobile}
       text={home.text}
       logo={home.logo}
     />

@@ -32,6 +32,18 @@
   object-fit: cover;
 }
 
+@media (max-width: 767px) {
+  .home-page__bg--video-desktop {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .home-page__bg--video-mobile {
+    display: none;
+  }
+}
+
 .home-page__video {
   position: absolute;
   inset: 0;

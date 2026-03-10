@@ -14,26 +14,40 @@ interface MuxVideo {
 interface HomePageProps {
   image?: SanityImage | null
   video?: MuxVideo | null
+  videoMobile?: MuxVideo | null
   text?: PortableTextBlock[]
   logo?: SanityImage | null
 }
 
-export default function HomePage({ image, video, text, logo }: HomePageProps) {
+export default function HomePage({ image, video, videoMobile, text, logo }: HomePageProps) {
   const imageUrl = image && urlForImage(image)
   const hasVideo = video?.playbackId && video?.status === 'ready'
+  const hasVideoMobile = videoMobile?.playbackId && videoMobile?.status === 'ready'
+  const mobilePlaybackId = hasVideoMobile ? videoMobile!.playbackId! : video?.playbackId
 
   return (
     <main className="home-page">
       {hasVideo && video.playbackId && (
-        <div className="home-page__bg home-page__bg--video">
-          <MuxVideoPlayer
-            playbackId={video.playbackId}
-            muted
-            autoPlay
-            loop
-            objectFit="cover"
-          />
-        </div>
+        <>
+          <div className="home-page__bg home-page__bg--video home-page__bg--video-desktop">
+            <MuxVideoPlayer
+              playbackId={video.playbackId}
+              muted
+              autoPlay
+              loop
+              objectFit="cover"
+            />
+          </div>
+          <div className="home-page__bg home-page__bg--video home-page__bg--video-mobile">
+            <MuxVideoPlayer
+              playbackId={mobilePlaybackId!}
+              muted
+              autoPlay
+              loop
+              objectFit="cover"
+            />
+          </div>
+        </>
       )}
       {!hasVideo && imageUrl && (
         <div className="home-page__bg">

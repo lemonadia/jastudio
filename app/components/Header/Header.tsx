@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { PortableText } from '@portabletext/react'
+import type { PortableTextBlock } from '@portabletext/types'
 import './header.css'
 
 const SCROLL_THRESHOLD = 80
@@ -21,6 +23,7 @@ interface RightLink {
 interface NavData {
   leftLinks?: LeftLink[] | null
   rightLinks?: RightLink[] | null
+  mobileText?: PortableTextBlock[] | null
 }
 
 interface HeaderProps {
@@ -37,6 +40,7 @@ export default function Header({ nav }: HeaderProps) {
 
   const leftLinks = nav?.leftLinks ?? []
   const rightLinks = nav?.rightLinks ?? []
+  const mobileText = nav?.mobileText
 
   useEffect(() => {
     document.body.classList.toggle('body-menu-open', menuOpen)
@@ -162,6 +166,11 @@ export default function Header({ nav }: HeaderProps) {
               <span className="header__link-text">{item.label}</span>
             </a>
           ))}
+          {mobileText && mobileText.length > 0 && (
+            <div className="header__overlay-text">
+              <PortableText value={mobileText} />
+            </div>
+          )}
         </div>
       </div>
     </>
