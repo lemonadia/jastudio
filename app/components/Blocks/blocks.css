@@ -46,7 +46,7 @@
   }
 }
 
-/* 1 item: mobile i desktop = cover, desktop = 100vh */
+/* 1 item: mobile = height auto, desktop = 100vh */
 .text-image__media--single {
   min-height: auto;
   position: relative;
@@ -55,18 +55,11 @@
 .text-image__media--single .text-image__grid-item {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
 }
 
-.text-image__media--single .text-image__grid-item img,
-.text-image__media--single .text-image__grid-item mux-player {
-  position: absolute;
-  inset: 0;
+.text-image__media--single .text-image__grid-item img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  height: auto;
   display: block;
 }
 
@@ -78,10 +71,8 @@
     position: absolute;
     inset: 0;
     height: 100%;
-    aspect-ratio: unset;
   }
-  .text-image__media--single .text-image__grid-item img,
-  .text-image__media--single .text-image__grid-item mux-player {
+  .text-image__media--single .text-image__grid-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
