@@ -74,6 +74,20 @@
   object-fit: contain;
 }
 
+/* Chrome na iOS: logo na własnej warstwie + fixed w środku – nie „lata” przy scrollu (zmiana viewportu) */
+@media (max-width: 767px) {
+  .home-page__logo {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) translateZ(0);
+    -webkit-transform: translate(-50%, -50%) translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    z-index: 2;
+  }
+}
+
 .home-page__text {
   position: absolute;
   bottom: 20px;
