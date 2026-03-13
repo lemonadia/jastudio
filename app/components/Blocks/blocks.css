@@ -169,7 +169,7 @@
   min-width: 0;
 
   @media (min-width: 768px) {
-    max-width: 700px;
+    /* max-width: 700px; */
   }
 }
 
@@ -223,9 +223,9 @@
     min-width: 0;
   }
 
-  /* Tekst: kolumny 6–11 (5 = gap, 12 = 1fr przerwa na końcu) */
+  /* Tekst: 6/12 (nie 6/-1), kolumna 12 = przerwa */
   .text-image__row .text-image__body {
-    grid-column: 6 / span 6;
+    grid-column: 6 / 12;
     grid-row: 1;
   }
 
@@ -246,7 +246,7 @@
 
 
 .text-block--center .text-block__inner {
-  max-width: 700px;
+  /* max-width: 700px; */
   margin-left: auto;
   margin-right: auto;
   text-align: center;
@@ -268,7 +268,7 @@
 
   @media (min-width: 768px) {
     grid-column: 6 / -1;
-    max-width: 700px;
+    /* max-width: 700px; */
   }
 }
 
