@@ -223,9 +223,9 @@
     min-width: 0;
   }
 
-  /* Tekst: kolumny 6–12 (5 = gap) */
+  /* Tekst: kolumny 6–11 (5 = gap, 12 = 1fr przerwa na końcu) */
   .text-image__row .text-image__body {
-    grid-column: 6 / -1;
+    grid-column: 6 / span 6;
     grid-row: 1;
   }
 
