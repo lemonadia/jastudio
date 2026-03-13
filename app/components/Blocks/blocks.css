@@ -168,8 +168,8 @@
 .text-image__body {
   min-width: 0;
 
-  @media (min-width: 768px) {
-    /* max-width: 700px; */
+  @media (min-width: 1900px) {
+    max-width: 700px;
   }
 }
 
@@ -246,10 +246,13 @@
 
 
 .text-block--center .text-block__inner {
-  /* max-width: 700px; */
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+  max-width: 700px;
+
+  @media (min-width: 1900px) {
+  }
 }
 
 .text-block--center .text-block__links {
@@ -268,7 +271,10 @@
 
   @media (min-width: 768px) {
     grid-column: 6 / 12;
-    /* max-width: 700px; */
+  }
+
+  @media (min-width: 1900px) {
+    max-width: 700px;
   }
 }
 
