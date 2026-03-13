@@ -14,10 +14,10 @@ type NavData = {
 export const metadata: Metadata = {
   title: "Next.js + Sanity",
   description: "Next.js application with Sanity CMS",
-  icons: [
-    { rel: "icon", url: "/icon.png", type: "image/png", sizes: "any" },
-    { rel: "apple-touch-icon", url: "/icon.png", sizes: "180x180" },
-  ],
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default async function RootLayout({
@@ -35,8 +35,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/icon.png" type="image/png" sizes="any" />
-        <link rel="apple-touch-icon" href="/icon.png" sizes="180x180" />
         <link rel="stylesheet" href="https://use.typekit.net/ngi1yzp.css" />
       </head>
       <body>
