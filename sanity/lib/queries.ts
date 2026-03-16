@@ -94,3 +94,11 @@ export const navigationQuery = groq`*[_type == "navigation"][0]{
   },
   mobileText
 }`
+
+// Footer (singleton)
+export const footerQuery = groq`*[_type == "footer"][0]{
+  links[]{
+    label,
+    url
+  }
+}`
