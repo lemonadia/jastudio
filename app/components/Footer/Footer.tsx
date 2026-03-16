@@ -1,4 +1,7 @@
+ 'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import './footer.css'
 
 type FooterLink = {
@@ -11,6 +14,11 @@ interface FooterProps {
 }
 
 export default function Footer({ links }: FooterProps) {
+  const pathname = usePathname()
+
+  // Brak footera na homepage
+  if (pathname === '/') return null
+
   if (!links || links.length === 0) return null
 
   return (
