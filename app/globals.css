@@ -111,7 +111,7 @@ h2, h3 {
 
 /* Subpages: content below fixed header */
 body.page--subpage .page-transition {
-  padding-top: calc(var(--header-height) + 40px);
+  padding-top: calc(var(--header-height) + 80px);
 }
 
 @keyframes pageFadeIn {
