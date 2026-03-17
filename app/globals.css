@@ -58,9 +58,9 @@ h2, h3 {
   gap: 60px;
 }
 
-.blocks > *:last-child {
+/* .blocks > *:last-child {
   margin-bottom: 160px;
-}
+} */
 
 /* Cover wrap – aspect-ratio box (e.g. for images/video) */
 .cover-wrap {

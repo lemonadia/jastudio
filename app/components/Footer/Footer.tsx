@@ -43,8 +43,10 @@ export default function Footer({ links }: FooterProps) {
                 target={item.url.startsWith('http') ? '_blank' : undefined}
                 rel={item.url.startsWith('http') ? 'noreferrer' : undefined}
               >
-                {item.label}
+                <span className="footer__link-text">{item.label}</span>
+                <span className="footer__link-separator">|</span>
               </Link>
+              
             ) : null,
           )}
         </nav>
