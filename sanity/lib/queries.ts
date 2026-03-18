@@ -102,3 +102,9 @@ export const footerQuery = groq`*[_type == "footer"][0]{
     url
   }
 }`
+
+// Cookie banner (singleton)
+export const cookieBannerQuery = groq`*[_type == "cookieBanner"][0]{
+  title,
+  body
+}`

@@ -40,8 +40,6 @@ export default function Footer({ links }: FooterProps) {
                 key={`${item.url}-${index}`}
                 href={item.url}
                 className="footer__link"
-                target={item.url.startsWith('http') ? '_blank' : undefined}
-                rel={item.url.startsWith('http') ? 'noreferrer' : undefined}
               >
                 <span className="footer__link-text">{item.label}</span>
                 <span className="footer__link-separator">|</span>

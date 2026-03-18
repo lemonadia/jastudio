@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/fetch";
-import { navigationQuery, footerQuery } from "@/sanity/lib/queries";
+import { navigationQuery, footerQuery, cookieBannerQuery } from "@/sanity/lib/queries";
 import Header from "./components/Header/Header";
 import PageTransition from "./components/PageTransition";
 import Footer from "./components/Footer/Footer";
+import CookieBanner from "./components/CookieBanner/CookieBanner";
 import "./globals.css";
 
 type NavData = {
@@ -15,6 +16,8 @@ type NavData = {
 type FooterData = {
   links?: { label?: string | null; url?: string | null }[] | null;
 };
+
+type CookieBannerData = import('./components/CookieBanner/CookieBanner').CookieBannerData
 
 export const metadata: Metadata = {
   title: "Next.js + Sanity",
@@ -28,6 +31,7 @@ export default async function RootLayout({
 }>) {
   let nav: NavData | null = null;
   let footer: FooterData | null = null;
+  let cookieBanner: CookieBannerData = null;
   try {
     nav = await sanityFetch<NavData | null>({ query: navigationQuery });
   } catch {
@@ -37,6 +41,11 @@ export default async function RootLayout({
     footer = await sanityFetch<FooterData | null>({ query: footerQuery });
   } catch {
     // ignore footer errors
+  }
+  try {
+    cookieBanner = await sanityFetch<CookieBannerData>({ query: cookieBannerQuery });
+  } catch {
+    // ignore cookie banner errors
   }
 
   return (
@@ -49,6 +58,7 @@ export default async function RootLayout({
         <Header nav={nav} />
         <PageTransition>{children}</PageTransition>
         <Footer links={footer?.links ?? []} />
+        <CookieBanner data={cookieBanner} />
       </body>
     </html>
   );
