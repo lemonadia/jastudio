@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { PortableText } from '@portabletext/react'
 import type { PortableTextBlock } from '@portabletext/types'
 import './cookieBanner.css'
+import { usePathname } from 'next/navigation'
 
 type Consent = {
   necessary: true
@@ -51,6 +52,7 @@ function parseConsent(raw: string | null): Consent | null {
 }
 
 export default function CookieBanner({ data }: { data: CookieBannerData }) {
+  const pathname = usePathname()
   const labels = useMemo(() => {
     return {
       title: data?.title ?? 'Cookie preferences',
@@ -82,6 +84,7 @@ export default function CookieBanner({ data }: { data: CookieBannerData }) {
     setVisible(true)
   }, [])
 
+  if (pathname.startsWith('/studio')) return null
   if (!data) return null
   if (!visible) return null
 
