@@ -19,9 +19,27 @@ type FooterData = {
 
 type CookieBannerData = import('./components/CookieBanner/CookieBanner').CookieBannerData
 
+/** Ikony: opcjonalnie `public/apple-touch-icon.png` 180×180 (ostry na iOS) zamiast `/icon.png`. */
 export const metadata: Metadata = {
   title: "Next.js + Sanity",
   description: "Next.js application with Sanity CMS",
+  manifest: "/site.webmanifest",
+  themeColor: "#ffffff",
+  appleWebApp: {
+    capable: true,
+    title: "King's Crow",
+    statusBarStyle: "default",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-96x96.png", type: "image/png", sizes: "96x96" },
+      { url: "/web-app-manifest-192x192.png", type: "image/png", sizes: "192x192" },
+      { url: "/web-app-manifest-512x512.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/favicon-96x96.png",
+  },
 };
 
 export default async function RootLayout({
@@ -51,7 +69,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="stylesheet" href="https://use.typekit.net/ngi1yzp.css" />
       </head>
       <body>
