@@ -1,87 +1,59 @@
-import type { Metadata } from 'next'
-import { sanityFetch } from '@/sanity/lib/fetch'
-import { pageQuery, pagePathsQuery } from '@/sanity/lib/queries'
-import { client } from '@/sanity/lib/client'
-import { urlForImage } from '@/sanity/lib/image'
-import type { Image as SanityImage } from 'sanity'
-import BlockRenderer, { type Block } from '../components/Blocks/BlockRenderer'
 import { notFound } from 'next/navigation'
-
-type PageData = {
-  title?: string
-  seoTitle?: string
-  seoDescription?: string
-  seoImage?: SanityImage | null
-  blocks?: Block[]
-}
+import { sanityFetch } from '@/sanity/lib/fetch'
+import {
+  categoriesQuery,
+  categoryBySlugQuery,
+  projectsByCategorySlugQuery,
+} from '@/sanity/lib/queries'
+import CategoryList, { type CategoryItem } from '@/app/components/CategoryList/CategoryList'
+import FadeIn from '@/app/components/FadeIn/FadeIn'
+import Header from '@/app/components/Header/Header'
+import ProjectList, { type ProjectListItem } from '@/app/components/ProjectList/ProjectList'
 
 export const revalidate = 60
 
-export async function generateStaticParams() {
-  try {
-    const pages = await client.fetch(pagePathsQuery)
-    return (pages || []).map((page: { slug: string }) => ({
-      slug: page.slug,
-    }))
-  } catch {
-    return []
-  }
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}): Promise<Metadata> {
-  const { slug } = await params
-  const raw = await sanityFetch<PageData | null>({
-    query: pageQuery,
-    params: { slug },
-  })
-  if (!raw) return {}
-
-  const page = raw as PageData
-  const title = page.seoTitle || page.title
-  const description = page.seoDescription || undefined
-  const imageUrl = page.seoImage ? urlForImage(page.seoImage) : undefined
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description: description || undefined,
-      images: imageUrl
-        ? [{ url: imageUrl, width: 1200, height: 630, alt: (page.seoImage?.alt as string | undefined) ?? undefined }]
-        : [],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description: description || undefined,
-      images: imageUrl ? [imageUrl] : [],
-    },
-  }
-}
-
-export default async function Page({
+export default async function CategoryPage({
   params,
 }: {
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const page = await sanityFetch<PageData | null>({
-    query: pageQuery,
-    params: { slug },
-  })
 
-  if (!page) {
+  const [category, categoriesRaw, projects] = await Promise.all([
+    sanityFetch<{ title?: string | null } | null>({
+      query: categoryBySlugQuery,
+      params: { slug },
+    }).catch(() => null),
+    sanityFetch<{ slug?: string | null; title?: string | null }[]>({
+      query: categoriesQuery,
+    }).catch(() => []),
+    sanityFetch<ProjectListItem[]>({
+      query: projectsByCategorySlugQuery,
+      params: { slug },
+    }).catch(() => []),
+  ])
+
+  if (!category) {
     notFound()
   }
 
+  const categories: CategoryItem[] = categoriesRaw
+    .filter((c): c is CategoryItem => Boolean(c.slug && c.title))
+    .map((c) => ({ slug: c.slug as string, title: c.title as string }))
+
   return (
-    <main className={slug === 'about-us' ? 'page-about-us' : undefined}>
-      {page.blocks && <BlockRenderer blocks={page.blocks} />}
+    <main className="page">
+      <Header />
+
+      <section className="page__categories">
+        <CategoryList categories={categories} activeSlug={slug} />
+      </section>
+
+      <section className="page__projects">
+        <FadeIn>
+          <ProjectList projects={projects} />
+        </FadeIn>
+      </section>
     </main>
   )
 }

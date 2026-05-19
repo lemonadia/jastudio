@@ -1,15 +1,9 @@
-/**
- * This configuration is used to for the Sanity Studio that’s mounted on the `/pages/studio/[[...index]].tsx` route
- */
-
-import {visionTool} from '@sanity/vision'
-import {defineConfig} from 'sanity'
-import {structureTool, type StructureBuilder} from 'sanity/structure'
-// Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
-import {apiVersion, dataset, projectId} from './sanity/env'
-import {schema} from './sanity/schema'
-import {stripMetadataUploadSource} from './sanity/plugins/strip-metadata-upload'
-import {muxInput} from 'sanity-plugin-mux-input'
+import { orderableDocumentListDeskItem } from '@sanity/orderable-document-list'
+import { visionTool } from '@sanity/vision'
+import { defineConfig } from 'sanity'
+import { structureTool } from 'sanity/structure'
+import { apiVersion, dataset, projectId } from './sanity/env'
+import { schema } from './sanity/schema'
 
 export default defineConfig({
   basePath: '/studio',
@@ -17,42 +11,28 @@ export default defineConfig({
   dataset,
   apiVersion,
   schema,
-  form: {
-    image: {
-      directUploads: false,
-      assetSources: (prev) => [stripMetadataUploadSource, ...prev],
-    },
-  },
   plugins: [
     structureTool({
-      structure: (S: StructureBuilder) =>
+      structure: (S, context) =>
         S.list()
           .title('Content')
           .items([
             S.listItem()
-              .title('Home Page')
-              .child(
-                S.document()
-                  .schemaType('homePage')
-                  .documentId('homePage')
-              ),
+              .title('Site settings')
+              .child(S.document().schemaType('settings').documentId('siteSettings')),
             S.listItem()
-              .title('Navigation')
-              .child(
-                S.document()
-                  .schemaType('navigation')
-                  .documentId('navigation')
-              ),
+              .title('Info')
+              .child(S.document().schemaType('info').documentId('info')),
             S.divider(),
-            ...S.documentTypeListItems().filter(
-              (item) => {
-                const id = item.getId()
-                return id && id !== 'homePage' && id !== 'navigation' && id !== 'mux.videoAsset'
-              }
-            ),
+            S.documentTypeListItem('category').title('Categories'),
+            orderableDocumentListDeskItem({
+              type: 'project',
+              title: 'Projects',
+              S,
+              context,
+            }),
           ]),
     }),
-    visionTool({defaultApiVersion: apiVersion}),
-    muxInput(),
+    visionTool({ defaultApiVersion: apiVersion }),
   ],
 })

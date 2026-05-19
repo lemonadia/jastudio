@@ -1,55 +1,27 @@
- 'use client'
+'use client'
 
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import './footer.css'
+import './Footer.css'
 
-type FooterLink = {
-  label?: string | null
-  url?: string | null
-}
-
-interface FooterProps {
-  links?: FooterLink[] | null
-}
-
-export default function Footer({ links }: FooterProps) {
+export default function Footer() {
   const pathname = usePathname()
+  const year = new Date().getFullYear()
 
-  // Brak footera na homepage
-  if (pathname === '/') return null
-
-  if (!links || links.length === 0) return null
+  if (pathname?.startsWith('/project/')) {
+    return null
+  }
 
   return (
     <footer className="footer">
-      <div className="footer__inner container">
-        <div className="footer__logo">
-          <img
-            src="/footer-logo.svg"
-            alt=""
-            className="footer__logo-img"
-            aria-hidden="true"
-          />
-        </div>
-        <div className="footer__copy">© The King’s Cow {new Date().getFullYear()}</div>
-        <nav className="footer__nav" aria-label="Footer">
-          {links.map((item, index) =>
-            item?.url && item.label ? (
-              <Link
-                key={`${item.url}-${index}`}
-                href={item.url}
-                className="footer__link"
-              >
-                <span className="footer__link-text">{item.label}</span>
-                <span className="footer__link-separator">|</span>
-              </Link>
-              
-            ) : null,
-          )}
-        </nav>
-      </div>
+      <span className="footer__copy">© Jonathan Arundel Studio {year}</span>
+      <a
+        href="https://okdeploy.pl"
+        className="footer__credit"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        site by ok deploy
+      </a>
     </footer>
   )
 }
-

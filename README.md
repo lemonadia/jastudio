@@ -1,35 +1,20 @@
-# How to build a blog with Next.js and Sanity.io
+# Next.js + Sanity (starter)
 
-## Getting Started
+## Setup
 
-First, run the development server:
+W katalogu projektu utwórz plik **`.env`** (sam u siebie — nie idzie do gita) i wpisz:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+NEXT_PUBLIC_SANITY_PROJECT_ID=twoje_id_z_sanity
+NEXT_PUBLIC_SANITY_DATASET=production
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Potem: `npm install` → `npm run dev`.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Studio: [http://localhost:3000/studio](http://localhost:3000/studio) — **Site settings** → *Site title*.
 
+W Sanity Manage → **API → CORS** dodaj `http://localhost:3000`.
 
-## Part 1: 
-1. Install Next.js
-2. Install Sanity
-3. Add post in Sanity Studio
-4. Add Sanity fetch function and groq queries
-5. Get and display posts
-6. Get and display content of each post
-7. Install and apply Tailwind CSS Typography Plugin
+## Stack
 
-## Part 2:
-1. Add extra fields to the Sanity studio
-2. Make more customised queries
-3. Alternative way to fetch and display images
-4. Apply CSS to blog
+Next.js (App Router), Tailwind, Sanity pod `/studio`, typ **settings** (singleton `siteTitle`).

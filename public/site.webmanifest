@@ -1,11 +1,11 @@
 {
-  "name": "King's Crow",
-  "short_name": "King's Crow",
+  "name": "Jonathan Arundel Studio",
+  "short_name": "JA Studio",
   "description": "Next.js + Sanity",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#fafafa",
+  "theme_color": "#fafafa",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

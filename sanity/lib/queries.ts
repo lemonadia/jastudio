@@ -1,110 +1,121 @@
-import { groq } from "next-sanity"
+import { groq } from 'next-sanity'
 
-// Home page (singleton)
-export const homePageQuery = groq`*[_type == "homePage"][0]{
-  image,
-  "video": video.asset->{
-    playbackId,
-    assetId,
-    status
-  },
-  "videoMobile": videoMobile.asset->{
-    playbackId,
-    assetId,
-    status
-  },
-  text,
-  logo,
-  seoTitle,
-  seoDescription,
-  seoImage
+export const settingsQuery = groq`*[_type == "settings"][0]{ siteTitle }`
+
+export const infoQuery = groq`*[_type == "info"][0]{
+  body,
+  contactHeading,
+  contactText,
+  instagramHeading,
+  instagramName,
+  instagramLink,
+  downloadHeading,
+  "downloadUrl": downloadFile.asset->url,
+  "downloadFilename": downloadFile.asset->originalFilename
 }`
 
-// Page by slug (blocks + SEO)
-export const pageQuery = groq`*[_type == "page" && slug.current == $slug][0]{
+export const categoriesQuery = groq`*[_type == "category"] | order(title asc) {
   _id,
   title,
-  slug,
-  seoTitle,
-  seoDescription,
-  seoImage,
-  blocks[]{
-    _type,
-    _type == "textImage" => {
-      title,
-      text,
-      smallText,
-      imagePosition,
-      media[]{
-        image,
-        "video": video.asset->{
-          playbackId,
-          assetId,
-          status
-        }
-      },
-      links[]{
-        label,
-        linkType,
-        url,
-        "slug": internalRef->slug.current
-      }
-    },
-    _type == "textBlock" => {
-      heading,
-      body,
-      links[]{
-        label,
-        linkType,
-        url,
-        email,
-        "slug": internalRef->slug.current,
-        "fileUrl": file.asset->url
-      },
-      alignment
-    },
-    _type == "gallery" => {
-      items[]{
-        "imageURL": image.asset->url,
-        "alt": image.alt,
-        "video": video.asset->{
-          playbackId,
-          assetId,
-          status
-        }
-      }
-    }
-  }
-}`
-
-export const pagePathsQuery = groq`*[_type == "page" && defined(slug.current)][]{
   "slug": slug.current
 }`
 
-// Navigation (singleton)
-export const navigationQuery = groq`*[_type == "navigation"][0]{
-  leftLinks[]{
-    label,
-    "slug": page->slug.current,
-    "title": page->title
-  },
-  rightLinks[]{
-    label,
-    url
-  },
-  mobileText
-}`
-
-// Footer (singleton)
-export const footerQuery = groq`*[_type == "footer"][0]{
-  links[]{
-    label,
-    url
-  }
-}`
-
-// Cookie banner (singleton)
-export const cookieBannerQuery = groq`*[_type == "cookieBanner"][0]{
+export const categoryBySlugQuery = groq`*[_type == "category" && slug.current == $slug][0]{
+  _id,
   title,
-  body
+  "slug": slug.current
+}`
+
+export const allProjectsQuery = groq`*[_type == "project"] | order(orderRank asc, year desc, title asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  year,
+  thumbnail {
+    size,
+    image {
+      alt,
+      hotspot,
+      crop,
+      asset,
+      "width": asset->metadata.dimensions.width,
+      "height": asset->metadata.dimensions.height
+    }
+  },
+  "categories": categories[]->{ _id, title, "slug": slug.current }
+}`
+
+export const projectsByCategorySlugQuery = groq`*[_type == "project" && $slug in categories[]->slug.current] | order(orderRank asc, year desc, title asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  year,
+  thumbnail {
+    size,
+    image {
+      alt,
+      hotspot,
+      crop,
+      asset,
+      "width": asset->metadata.dimensions.width,
+      "height": asset->metadata.dimensions.height
+    }
+  },
+  "categories": categories[]->{ _id, title, "slug": slug.current }
+}`
+
+export const indexProjectsQuery = groq`*[_type == "project"] | order(orderRank asc, year desc, title asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  year,
+  thumbnail {
+    image {
+      alt,
+      hotspot,
+      crop,
+      asset,
+      "width": asset->metadata.dimensions.width,
+      "height": asset->metadata.dimensions.height
+    }
+  },
+  gallery[]{
+    alt,
+    hotspot,
+    crop,
+    asset,
+    "width": asset->metadata.dimensions.width,
+    "height": asset->metadata.dimensions.height
+  },
+  "categories": categories[]->{ title, "slug": slug.current }
+}`
+
+export const projectSlugsQuery = groq`*[_type == "project" && defined(slug.current)][]{
+  "slug": slug.current
+}`
+
+export const projectBySlugQuery = groq`*[_type == "project" && slug.current == $slug][0]{
+  _id,
+  title,
+  "slug": slug.current,
+  year,
+  categories[]->{ title, "slug": slug.current },
+  thumbnail {
+    image {
+      alt,
+      hotspot,
+      crop,
+      asset,
+      "width": asset->metadata.dimensions.width,
+      "height": asset->metadata.dimensions.height
+    }
+  },
+  gallery[]{
+    alt,
+    hotspot,
+    crop,
+    asset,
+    "width": asset->metadata.dimensions.width,
+    "height": asset->metadata.dimensions.height
+  }
 }`

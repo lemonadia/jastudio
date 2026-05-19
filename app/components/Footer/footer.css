@@ -1,51 +1,16 @@
 .footer {
-  padding-bottom: 40px;
-  font-size: 15px;
-  line-height: 1;
-  color: #211F21
-}
-
-
-
-.footer__inner {
   display: flex;
-  justify-content: center;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  padding: 40px;
+  font-family: 'PP Neue Montreal', system-ui, sans-serif;
+  font-size: 9px;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: 0.08em;
 }
 
-.footer__nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.footer__logo {
-  margin-bottom: 27px;
-}
-
-.footer__copy {
-  margin-bottom: 3px;
-}
-
-
-.footer__link {
-  text-decoration: none;
-  font-weight: 300;
+.footer__credit {
   color: inherit;
-}
-
-.footer__link-separator {
-  margin: 0 10px;
-}
-
-.footer__link:last-child .footer__link-separator {
-  display: none;
-}
-
-
-@media (max-width:767px) {
-  .footer {
-    font-size: 13px;
-  }
+  text-decoration: none;
 }
