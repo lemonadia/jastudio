@@ -109,7 +109,7 @@
   display: contents;
 }
 
-.index-desktop-split > .index-row__meta {
+.index-desktop-split>.index-row__meta {
   grid-column: 10;
   grid-row: 1;
 }
@@ -139,7 +139,7 @@
   width: 100%;
 }
 
-.index-row__mobile > .index-row__meta {
+.index-row__mobile>.index-row__meta {
   width: 100%;
 }
 
@@ -185,10 +185,11 @@
 
 
 @media (max-width: 768px) {
-.index-list {
-  margin-top: 129px;
-}  
-.index-row__title {
-  margin: 0;
-}
+  .index-list {
+    margin-top: 129px;
+  }
+
+  .index-row__title {
+    margin: 0;
+  }
 }

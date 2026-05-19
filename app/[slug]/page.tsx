@@ -45,7 +45,8 @@ export default async function CategoryPage({
     <main className="page">
       <Header />
 
-      <section className="page__categories">
+    <div className="home">
+    <section className="page__categories">
         <CategoryList categories={categories} activeSlug={slug} />
       </section>
 
@@ -54,6 +55,8 @@ export default async function CategoryPage({
           <ProjectList projects={projects} />
         </FadeIn>
       </section>
+    </div>
+      
     </main>
   )
 }
