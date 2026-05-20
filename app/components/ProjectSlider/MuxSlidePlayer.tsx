@@ -3,6 +3,7 @@
 import MuxPlayer from '@mux/mux-player-react'
 import type MuxPlayerElement from '@mux/mux-player'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { muxGalleryPosterUrl } from '@/sanity/lib/mux'
 import './MuxSlidePlayer.css'
 
 type Props = {
@@ -17,18 +18,48 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`
 }
 
+const CONTROLS_HIDE_MS = 2800
+
 export default function MuxSlidePlayer({ playbackId, title }: Props) {
   const playerRef = useRef<MuxPlayerElement>(null)
+  const hideControlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [controlsVisible, setControlsVisible] = useState(false)
   const [muted, setMuted] = useState(true)
   const [progress, setProgress] = useState(0)
   const [duration, setDuration] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
+  /** Po metadanych trzymaj aspect wideo — wcześniej rozmiar daje poster (jak zdjęcie w slajderze). */
+  const [videoDims, setVideoDims] = useState<{ w: number; h: number } | null>(null)
+
+  const scheduleHideControls = useCallback(() => {
+    if (hideControlsTimeoutRef.current) {
+      clearTimeout(hideControlsTimeoutRef.current)
+    }
+    hideControlsTimeoutRef.current = setTimeout(() => {
+      setControlsVisible(false)
+      hideControlsTimeoutRef.current = null
+    }, CONTROLS_HIDE_MS)
+  }, [])
+
+  const revealControls = useCallback(() => {
+    setControlsVisible(true)
+    scheduleHideControls()
+  }, [scheduleHideControls])
+
+  useEffect(() => {
+    return () => {
+      if (hideControlsTimeoutRef.current) {
+        clearTimeout(hideControlsTimeoutRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     setMuted(true)
     setProgress(0)
     setDuration(0)
     setCurrentTime(0)
+    setVideoDims(null)
   }, [playbackId])
 
   useEffect(() => {
@@ -84,32 +115,78 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
     [seekToRatio],
   )
 
+  const onMuxLoadedMetadata = useCallback((e: Event) => {
+    const el = e.currentTarget as MuxPlayerElement
+    const d = el.duration
+    const t = el.currentTime
+    if (Number.isFinite(d) && d > 0) {
+      setDuration(d)
+      setCurrentTime(t)
+      setProgress(t / d)
+    }
+    if (el.videoWidth > 0 && el.videoHeight > 0) {
+      setVideoDims({ w: el.videoWidth, h: el.videoHeight })
+    }
+  }, [])
+
   if (!playbackId) return null
 
   return (
     <div className="project__video">
-      <MuxPlayer
-        ref={playerRef}
-        key={playbackId}
-        className="project__mux-player"
-        playbackId={playbackId}
-        title={title}
-        streamType="on-demand"
-        autoPlay="muted"
-        muted={muted}
-        playsInline
-        preload="auto"
-        accentColor="#000000"
-        nohotkeys
-      />
+      <div
+        className={`project__video-frame${videoDims ? ' project__video-frame--video-sized' : ''}${controlsVisible ? ' project__video-frame--controls-visible' : ''}`}
+        style={
+          videoDims
+            ? { aspectRatio: `${videoDims.w} / ${videoDims.h}` }
+            : undefined
+        }
+        onPointerMove={revealControls}
+        onPointerEnter={revealControls}
+        onPointerDown={revealControls}
+        onPointerLeave={() => {
+          if (hideControlsTimeoutRef.current) {
+            clearTimeout(hideControlsTimeoutRef.current)
+            hideControlsTimeoutRef.current = null
+          }
+          setControlsVisible(false)
+        }}
+      >
+        <MuxPlayer
+          ref={playerRef}
+          key={playbackId}
+          className={`project__mux-player${videoDims ? ' project__mux-player--in-flow' : ' project__mux-player--preload'}`}
+          playbackId={playbackId}
+          title={title}
+          poster={muxGalleryPosterUrl(playbackId)}
+          streamType="on-demand"
+          autoPlay="muted"
+          muted={muted}
+          playsInline
+          preload="auto"
+          accentColor="#000000"
+          nohotkeys
+          onLoadedMetadata={onMuxLoadedMetadata}
+        />
 
-      <div className="project__video-controls">
+        {!videoDims ? (
+          <img
+            className="project__video-poster"
+            src={muxGalleryPosterUrl(playbackId)}
+            alt=""
+            decoding="async"
+            draggable={false}
+            aria-hidden
+          />
+        ) : null}
+
+        <div className="project__video-controls">
         <button
           type="button"
           className="project__video-mute"
           onClick={(e) => {
             e.stopPropagation()
             toggleMute()
+            revealControls()
           }}
           aria-label={muted ? 'Turn sound on' : 'Turn sound off'}
           aria-pressed={!muted}
@@ -133,6 +210,7 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
           }}
           onPointerDown={(e) => {
             e.stopPropagation()
+            revealControls()
             if (e.button !== 0) return
             const track = e.currentTarget
             onProgressPointer(e.clientX, track)
@@ -147,6 +225,7 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
           }}
         >
           <div className="project__video-progress-fill" style={{ width: `${progress * 100}%` }} />
+        </div>
         </div>
       </div>
     </div>

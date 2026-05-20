@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
-import { urlForImage } from '@/sanity/lib/image'
 import LoopingMuxVideo from '@/app/components/LoopingMuxVideo/LoopingMuxVideo'
+import { categoryTitlesForTiles } from '@/sanity/lib/categoriesForTiles'
+import { urlForImage } from '@/sanity/lib/image'
 import {
   collectProjectMedia,
   type GalleryItem,
@@ -18,7 +19,7 @@ export type IndexProject = {
   year?: number | null
   thumbnail?: ProjectThumbnail | null
   gallery?: GalleryItem[] | null
-  categories?: { title?: string | null }[] | null
+  categories?: { title?: string | null; slug?: string | null }[] | null
 }
 
 const FIRST_ROW_IMAGE_COUNT = 9
@@ -102,10 +103,7 @@ export default function IndexList({ projects }: { projects: IndexProject[] }) {
           : media
         const moreMedia = hasMoreThanNine ? media.slice(FIRST_ROW_IMAGE_COUNT) : []
         const indexNumber = String(i + 1).padStart(2, '0')
-        const categoryLabel = project.categories
-          ?.map((c) => c.title)
-          .filter(Boolean)
-          .join(', ')
+        const categoryLabel = categoryTitlesForTiles(project.categories)
         const projectHref = project.slug ? `/project/${project.slug}` : null
         const meta = renderMeta(project, projectHref, categoryLabel ?? '')
 

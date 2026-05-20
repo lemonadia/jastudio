@@ -67,6 +67,19 @@ export function muxMp4Url(playbackId: string, rendition: 'low' | 'medium' = 'low
   return `https://stream.mux.com/${playbackId}/${rendition}.mp4`
 }
 
+/**
+ * Pierwsza klatka z Mux — fit_mode=preserve, żeby zająć ten sam prostokąt co wideo
+ * zanim mux-player dostanie wymiary (wtedy nie ma „skoku” szerokości).
+ */
+export function muxGalleryPosterUrl(playbackId: string, width = 1920): string {
+  const params = new URLSearchParams({
+    time: '0',
+    width: String(width),
+    fit_mode: 'preserve',
+  })
+  return `https://image.mux.com/${encodeURIComponent(playbackId)}/thumbnail.jpg?${params}`
+}
+
 export function muxPlaybackIdFromVideo(
   video?: {
     playbackId?: string | null

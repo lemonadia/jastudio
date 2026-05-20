@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { CSSProperties, ReactNode } from 'react'
 import CmsImage from '@/app/components/CmsImage/CmsImage'
 import LoopingMuxVideo from '@/app/components/LoopingMuxVideo/LoopingMuxVideo'
+import { categoryTitlesForTiles } from '@/sanity/lib/categoriesForTiles'
 import { isSanityImageAsset } from '@/sanity/lib/image'
 import {
   muxPlaybackIdFromVideo,
@@ -52,10 +53,7 @@ function ProjectRow({ project, priority }: { project: ProjectListItem; priority?
   const size = project.thumbnail?.size ?? 'medium'
   const thumbnail = project.thumbnail
   const alt = project.title || 'Project thumbnail'
-  const categoryLabel = project.categories
-    ?.map((c) => c.title)
-    .filter(Boolean)
-    .join(', ')
+  const categoryLabel = categoryTitlesForTiles(project.categories)
 
   const sizes =
     size === 'big' ? '(max-width: 768px) 44vw, 18vw' : '(max-width: 768px) 32vw, 12vw'
