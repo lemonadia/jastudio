@@ -1,0 +1,29 @@
+/* Zapętlony podgląd — Mux Player (HLS), nie statyczny .mp4 */
+.ui-mux-loop--card {
+  display: block;
+  width: 100%;
+  height: 100%;
+  --controls: none;
+  --media-object-fit: cover;
+  --media-object-position: top center;
+  transition: opacity 0.3s ease;
+}
+
+.ui-mux-loop--card::part(media) {
+  object-fit: cover;
+  object-position: top center;
+}
+
+.index-row__video-wrap {
+  display: block;
+  height: max(120px, 8vw);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.ui-mux-loop--index {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

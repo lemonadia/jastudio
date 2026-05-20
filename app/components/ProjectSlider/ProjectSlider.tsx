@@ -1,21 +1,33 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useCallback, useRef, useState } from 'react'
 import './ProjectSlider.css'
 
+const MuxSlidePlayer = dynamic(() => import('./MuxSlidePlayer'), { ssr: false })
+
 export type SlideImage = {
+  type: 'image'
   url: string
   alt: string
   width: number
   height: number
 }
 
+export type SlideVideo = {
+  type: 'video'
+  playbackId: string
+  alt: string
+}
+
+export type Slide = SlideImage | SlideVideo
+
 type Props = {
   title: string
   year?: number | null
   categories: string
-  images: SlideImage[]
+  slides: Slide[]
   initialIndex?: number
 }
 
@@ -23,17 +35,17 @@ export default function ProjectSlider({
   title,
   year,
   categories,
-  images,
+  slides,
   initialIndex = 0,
 }: Props) {
   const router = useRouter()
   const [index, setIndex] = useState(() => {
-    if (images.length === 0) return 0
+    if (slides.length === 0) return 0
     const safe = Number.isFinite(initialIndex) ? initialIndex : 0
-    return Math.min(Math.max(0, safe), images.length - 1)
+    return Math.min(Math.max(0, safe), slides.length - 1)
   })
-  const total = images.length
-  const current = images[index]
+  const total = slides.length
+  const current = slides[index]
 
   const goNext = useCallback(() => {
     if (total < 2) return
@@ -128,7 +140,7 @@ export default function ProjectSlider({
         onTouchEnd={onTouchEnd}
         onTouchCancel={onTouchCancel}
       >
-        {current ? (
+        {current?.type === 'image' ? (
           <img
             className="project__image"
             src={current.url}
@@ -137,9 +149,13 @@ export default function ProjectSlider({
             height={current.height}
             draggable={false}
           />
-        ) : (
-          <p className="project__empty">No images in gallery.</p>
-        )}
+        ) : null}
+
+        {current?.type === 'video' ? (
+          <MuxSlidePlayer key={current.playbackId} playbackId={current.playbackId} title={current.alt} />
+        ) : null}
+
+        {!current ? <p className="project__empty">No media in gallery.</p> : null}
 
         {total > 1 ? (
           <>
@@ -147,13 +163,13 @@ export default function ProjectSlider({
               type="button"
               className="project__nav project__nav--prev"
               onClick={goPrev}
-              aria-label="Previous image"
+              aria-label="Previous"
             />
             <button
               type="button"
               className="project__nav project__nav--next"
               onClick={goNext}
-              aria-label="Next image"
+              aria-label="Next"
             />
           </>
         ) : null}

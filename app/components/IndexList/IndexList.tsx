@@ -1,39 +1,54 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
-import { collectProjectImages, type ProjectImage } from '@/sanity/lib/projectImages'
 import { urlForImage } from '@/sanity/lib/image'
+import LoopingMuxVideo from '@/app/components/LoopingMuxVideo/LoopingMuxVideo'
+import {
+  collectProjectMedia,
+  type GalleryItem,
+  type ProjectMediaItem,
+  type ProjectThumbnail,
+} from '@/sanity/lib/projectMedia'
 import IndexThumb from './IndexThumb'
 import './IndexList.css'
-
-type IndexImage = ProjectImage
 
 export type IndexProject = {
   _id: string
   title?: string | null
   slug?: string | null
   year?: number | null
-  thumbnail?: {
-    image?: IndexImage | null
-  } | null
-  gallery?: IndexImage[] | null
+  thumbnail?: ProjectThumbnail | null
+  gallery?: GalleryItem[] | null
   categories?: { title?: string | null }[] | null
 }
 
 const FIRST_ROW_IMAGE_COUNT = 9
 
-function renderImage(
-  image: IndexImage,
+function renderMedia(
+  item: ProjectMediaItem,
   j: number,
   project: IndexProject,
   projectHref: string | null,
   eager = false,
 ) {
   const alt =
-    (image.alt as string | undefined) || project.title || `Project image ${j + 1}`
-  const url = urlForImage(image, { height: 480, quality: 88 })
-  if (!url) return null
+    item.kind === 'image'
+      ? (item.image.alt as string | undefined) || project.title || `Project image ${j + 1}`
+      : item.alt || project.title || `Project video ${j + 1}`
 
-  const thumb = <IndexThumb src={url} alt={alt} eager={eager} />
+  const thumb =
+    item.kind === 'video' ? (
+      <span className="index-row__video-wrap">
+        <LoopingMuxVideo playbackId={item.playbackId} variant="index" priority={eager} />
+      </span>
+    ) : (
+      (() => {
+        const url = urlForImage(item.image, { height: 480, quality: 88 })
+        if (!url) return null
+        return <IndexThumb src={url} alt={alt} eager={eager} />
+      })()
+    )
+
+  if (!thumb) return null
 
   return projectHref ? (
     <Link
@@ -80,12 +95,12 @@ export default function IndexList({ projects }: { projects: IndexProject[] }) {
   return (
     <ul className="index-list">
       {projects.map((project, i) => {
-        const images = collectProjectImages(project.thumbnail, project.gallery)
-        const hasMoreThanNine = images.length > FIRST_ROW_IMAGE_COUNT
-        const firstRowImages = hasMoreThanNine
-          ? images.slice(0, FIRST_ROW_IMAGE_COUNT)
-          : images
-        const moreImages = hasMoreThanNine ? images.slice(FIRST_ROW_IMAGE_COUNT) : []
+        const media = collectProjectMedia(project.thumbnail, project.gallery)
+        const hasMoreThanNine = media.length > FIRST_ROW_IMAGE_COUNT
+        const firstRowMedia = hasMoreThanNine
+          ? media.slice(0, FIRST_ROW_IMAGE_COUNT)
+          : media
+        const moreMedia = hasMoreThanNine ? media.slice(FIRST_ROW_IMAGE_COUNT) : []
         const indexNumber = String(i + 1).padStart(2, '0')
         const categoryLabel = project.categories
           ?.map((c) => c.title)
@@ -107,37 +122,35 @@ export default function IndexList({ projects }: { projects: IndexProject[] }) {
                 <span className="index-row__index-close">]</span>
               </span>
 
-              {/* Desktop ≥1281px — osobny markup, limit 9 w pierwszym rzędzie */}
               <div className="index-row__desktop">
                 {hasMoreThanNine ? (
                   <div className="index-desktop-split">
                     <div className="index-desktop-split__nine">
-                      {firstRowImages.map((image, j) =>
-                        renderImage(image, j, project, projectHref, i === 0 && j < 6),
+                      {firstRowMedia.map((item, j) =>
+                        renderMedia(item, j, project, projectHref, i === 0 && j < 6),
                       )}
                     </div>
                     {meta}
                     <div className="index-desktop-split__more">
-                      {moreImages.map((image, j) =>
-                        renderImage(image, j + FIRST_ROW_IMAGE_COUNT, project, projectHref),
+                      {moreMedia.map((item, j) =>
+                        renderMedia(item, j + FIRST_ROW_IMAGE_COUNT, project, projectHref),
                       )}
                     </div>
                   </div>
                 ) : (
                   <div className="index-desktop-inline">
-                    {images.map((image, j) =>
-                      renderImage(image, j, project, projectHref, i === 0 && j < 6),
+                    {media.map((item, j) =>
+                      renderMedia(item, j, project, projectHref, i === 0 && j < 6),
                     )}
                     {meta}
                   </div>
                 )}
               </div>
 
-              {/* ≤1280px — osobny markup, zawsze to samo: wszystkie zdjęcia, potem meta */}
               <div className="index-row__mobile">
                 <div className="index-mobile-gallery">
-                  {images.map((image, j) =>
-                    renderImage(image, j, project, projectHref, i === 0 && j < 6),
+                  {media.map((item, j) =>
+                    renderMedia(item, j, project, projectHref, i === 0 && j < 6),
                   )}
                 </div>
                 {meta}

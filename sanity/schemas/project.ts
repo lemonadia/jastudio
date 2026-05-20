@@ -47,12 +47,20 @@ export default defineType({
     defineField({
       name: 'gallery',
       title: 'Gallery',
+      description: 'Add images or Mux videos. Mix freely.',
       type: 'array',
       of: [
         defineArrayMember({
           type: 'image',
+          name: 'galleryImage',
+          title: 'Image',
           options: { hotspot: true },
           fields: [{ name: 'alt', type: 'string', title: 'Alternative text' }],
+        }),
+        defineArrayMember({
+          type: 'mux.video',
+          name: 'galleryVideo',
+          title: 'Video',
         }),
       ],
     }),

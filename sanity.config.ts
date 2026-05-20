@@ -1,5 +1,6 @@
 import { orderableDocumentListDeskItem } from '@sanity/orderable-document-list'
 import { visionTool } from '@sanity/vision'
+import { muxInput } from 'sanity-plugin-mux-input'
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { apiVersion, dataset, projectId } from './sanity/env'
@@ -12,6 +13,7 @@ export default defineConfig({
   apiVersion,
   schema,
   plugins: [
+    muxInput(),
     structureTool({
       structure: (S, context) =>
         S.list()

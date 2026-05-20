@@ -1,23 +1,23 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import ProjectSlider, { type SlideImage } from '@/app/components/ProjectSlider/ProjectSlider'
+import ProjectSlider, { type Slide } from '@/app/components/ProjectSlider/ProjectSlider'
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { projectBySlugQuery, projectSlugsQuery } from '@/sanity/lib/queries'
 import { client } from '@/sanity/lib/client'
-import { collectProjectImages, type ProjectImage } from '@/sanity/lib/projectImages'
+import {
+  collectProjectMedia,
+  type GalleryItem,
+  type ProjectThumbnail,
+} from '@/sanity/lib/projectMedia'
 import { urlForImage } from '@/sanity/lib/image'
-
-type GalleryImage = ProjectImage
 
 type ProjectDoc = {
   title?: string | null
   slug?: string | null
   year?: number | null
   categories?: { title?: string | null }[] | null
-  thumbnail?: {
-    image?: GalleryImage | null
-  } | null
-  gallery?: GalleryImage[] | null
+  thumbnail?: ProjectThumbnail | null
+  gallery?: GalleryItem[] | null
 } | null
 
 export const revalidate = 60
@@ -49,23 +49,32 @@ export async function generateMetadata({
   }
 }
 
-function buildSlides(gallery: GalleryImage[] | null | undefined, title: string): SlideImage[] {
-  if (!gallery?.length) return []
+function buildSlides(items: ReturnType<typeof collectProjectMedia>, title: string): Slide[] {
+  return items
+    .map((item, i) => {
+      if (item.kind === 'video') {
+        return {
+          type: 'video' as const,
+          playbackId: item.playbackId,
+          alt: item.alt || `${title} — video ${i + 1}`,
+        }
+      }
 
-  return gallery
-    .map((img, i) => {
-      const url = urlForImage(img, { height: 1600, quality: 82 })
+      const url = urlForImage(item.image, { height: 1600, quality: 82 })
       if (!url) return null
-      const w = img.width && img.width > 0 ? img.width : 1200
-      const h = img.height && img.height > 0 ? img.height : 800
+
+      const w = item.image.width && item.image.width > 0 ? item.image.width : 1200
+      const h = item.image.height && item.image.height > 0 ? item.image.height : 800
+
       return {
+        type: 'image' as const,
         url,
-        alt: (img.alt as string | undefined) || `${title} — ${i + 1}`,
+        alt: (item.image.alt as string | undefined) || `${title} — ${i + 1}`,
         width: w,
         height: h,
       }
     })
-    .filter((s): s is SlideImage => Boolean(s))
+    .filter((s): s is Slide => Boolean(s))
 }
 
 export default async function ProjectPage({
@@ -78,6 +87,7 @@ export default async function ProjectPage({
   const { slug } = await params
   const { i } = await searchParams
   const parsed = i ? Number.parseInt(i, 10) : 0
+
   const doc = await sanityFetch<ProjectDoc>({
     query: projectBySlugQuery,
     params: { slug },
@@ -92,19 +102,16 @@ export default async function ProjectPage({
     .filter(Boolean)
     .join(', ')
 
-  const images = buildSlides(
-    collectProjectImages(doc.thumbnail, doc.gallery),
-    doc.title,
-  )
+  const slides = buildSlides(collectProjectMedia(doc.thumbnail, doc.gallery), doc.title)
   const initialIndex =
-    Number.isFinite(parsed) && parsed >= 0 ? Math.min(parsed, images.length - 1) : 0
+    Number.isFinite(parsed) && parsed >= 0 ? Math.min(parsed, slides.length - 1) : 0
 
   return (
     <ProjectSlider
       title={doc.title}
       year={doc.year}
       categories={categories ?? ''}
-      images={images}
+      slides={slides}
       initialIndex={initialIndex}
     />
   )

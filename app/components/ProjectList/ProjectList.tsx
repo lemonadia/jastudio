@@ -1,7 +1,14 @@
 import Link from 'next/link'
-import type { CSSProperties } from 'react'
-import type { Image as SanityImageSource } from 'sanity'
+import type { CSSProperties, ReactNode } from 'react'
 import CmsImage from '@/app/components/CmsImage/CmsImage'
+import LoopingMuxVideo from '@/app/components/LoopingMuxVideo/LoopingMuxVideo'
+import { isSanityImageAsset } from '@/sanity/lib/image'
+import {
+  muxPlaybackIdFromVideo,
+  muxThumbnailPreviewClip,
+  type ProjectThumbSize,
+} from '@/sanity/lib/mux'
+import type { ProjectThumbnail } from '@/sanity/lib/projectMedia'
 import './ProjectList.css'
 
 export type ProjectListItem = {
@@ -9,11 +16,14 @@ export type ProjectListItem = {
   title?: string | null
   slug?: string | null
   year?: number | null
-  thumbnail?: {
-    size?: 'big' | 'medium' | 'small' | null
-    image?: (SanityImageSource & { width?: number | null; height?: number | null }) | null
-  } | null
+  thumbnail?: ProjectThumbnail | null
   categories?: { title?: string | null; slug?: string | null }[] | null
+}
+
+function isVideoThumbnail(thumbnail?: ProjectThumbnail | null): boolean {
+  if (thumbnail?.mediaType === 'video') return true
+  if (thumbnail?.mediaType === 'image') return false
+  return Boolean(muxPlaybackIdFromVideo(thumbnail?.video))
 }
 
 export default function ProjectList({ projects }: { projects: ProjectListItem[] }) {
@@ -40,38 +50,53 @@ export default function ProjectList({ projects }: { projects: ProjectListItem[] 
 
 function ProjectRow({ project, priority }: { project: ProjectListItem; priority?: boolean }) {
   const size = project.thumbnail?.size ?? 'medium'
-  const image = project.thumbnail?.image
-  const alt = (image?.alt as string | undefined) || project.title || 'Project thumbnail'
-  const hasImage = Boolean(
-    image?.asset &&
-      typeof image.asset === 'object' &&
-      (('_ref' in image.asset && image.asset._ref) ||
-        ('_id' in image.asset && (image.asset as { _id?: string })._id)),
-  )
+  const thumbnail = project.thumbnail
+  const alt = project.title || 'Project thumbnail'
   const categoryLabel = project.categories
     ?.map((c) => c.title)
     .filter(Boolean)
     .join(', ')
 
+  const sizes =
+    size === 'big' ? '(max-width: 768px) 44vw, 18vw' : '(max-width: 768px) 32vw, 12vw'
+
+  let thumbContent: ReactNode
+
+  if (isVideoThumbnail(thumbnail)) {
+    const playbackId = muxPlaybackIdFromVideo(thumbnail?.video)
+    const clip = muxThumbnailPreviewClip(thumbnail)
+    thumbContent = playbackId ? (
+      <LoopingMuxVideo
+        playbackId={playbackId}
+        size={size as ProjectThumbSize}
+        variant="card"
+        priority={priority}
+        assetStartTime={clip.assetStartTime}
+        assetEndTime={clip.assetEndTime}
+      />
+    ) : (
+      <div className="project-card__thumb-placeholder">No thumbnail</div>
+    )
+  } else {
+    const image = thumbnail?.image
+    const hasImage = isSanityImageAsset(image ?? undefined)
+
+    thumbContent = hasImage ? (
+      <CmsImage
+        image={image}
+        alt={(image?.alt as string | undefined) || alt}
+        width={image?.width}
+        height={image?.height}
+        sizes={sizes}
+        priority={priority}
+      />
+    ) : (
+      <div className="project-card__thumb-placeholder">No thumbnail</div>
+    )
+  }
+
   const thumb = (
-    <div className={`project-card__thumb project-card__thumb--${size}`}>
-      {hasImage ? (
-        <CmsImage
-          image={image}
-          alt={alt}
-          width={image?.width}
-          height={image?.height}
-          sizes={
-            size === 'big'
-              ? '(max-width: 768px) 44vw, 18vw'
-              : '(max-width: 768px) 32vw, 12vw'
-          }
-          priority={priority}
-        />
-      ) : (
-        <div className="project-card__thumb-placeholder">No thumbnail</div>
-      )}
-    </div>
+    <div className={`project-card__thumb project-card__thumb--${size}`}>{thumbContent}</div>
   )
 
   return (

@@ -1,5 +1,43 @@
 import { groq } from 'next-sanity'
 
+const projectThumbnailFields = groq`
+  size,
+  mediaType,
+  previewStart,
+  previewDuration,
+  image {
+    alt,
+    hotspot,
+    crop,
+    asset,
+    "width": asset->metadata.dimensions.width,
+    "height": asset->metadata.dimensions.height
+  },
+  video {
+    ...,
+    "playbackId": asset->playbackId,
+    asset-> {
+      playbackId,
+      assetId,
+      filename,
+      thumbTime
+    }
+  }
+`
+
+const projectGalleryFields = groq`
+  _type,
+  _key,
+  alt,
+  hotspot,
+  crop,
+  asset,
+  "width": select(_type in ["image", "galleryImage"] => asset->metadata.dimensions.width),
+  "height": select(_type in ["image", "galleryImage"] => asset->metadata.dimensions.height),
+  "playbackId": select(_type in ["mux.video", "galleryVideo"] => asset->playbackId),
+  "videoAssetId": select(_type in ["mux.video", "galleryVideo"] => asset->assetId)
+`
+
 export const settingsQuery = groq`*[_type == "settings"][0]{ siteTitle }`
 
 export const infoQuery = groq`*[_type == "info"][0]{
@@ -32,15 +70,7 @@ export const allProjectsQuery = groq`*[_type == "project"] | order(orderRank asc
   "slug": slug.current,
   year,
   thumbnail {
-    size,
-    image {
-      alt,
-      hotspot,
-      crop,
-      asset,
-      "width": asset->metadata.dimensions.width,
-      "height": asset->metadata.dimensions.height
-    }
+    ${projectThumbnailFields}
   },
   "categories": categories[]->{ _id, title, "slug": slug.current }
 }`
@@ -51,15 +81,7 @@ export const projectsByCategorySlugQuery = groq`*[_type == "project" && $slug in
   "slug": slug.current,
   year,
   thumbnail {
-    size,
-    image {
-      alt,
-      hotspot,
-      crop,
-      asset,
-      "width": asset->metadata.dimensions.width,
-      "height": asset->metadata.dimensions.height
-    }
+    ${projectThumbnailFields}
   },
   "categories": categories[]->{ _id, title, "slug": slug.current }
 }`
@@ -70,22 +92,10 @@ export const indexProjectsQuery = groq`*[_type == "project"] | order(orderRank a
   "slug": slug.current,
   year,
   thumbnail {
-    image {
-      alt,
-      hotspot,
-      crop,
-      asset,
-      "width": asset->metadata.dimensions.width,
-      "height": asset->metadata.dimensions.height
-    }
+    ${projectThumbnailFields}
   },
   gallery[]{
-    alt,
-    hotspot,
-    crop,
-    asset,
-    "width": asset->metadata.dimensions.width,
-    "height": asset->metadata.dimensions.height
+    ${projectGalleryFields}
   },
   "categories": categories[]->{ title, "slug": slug.current }
 }`
@@ -101,21 +111,9 @@ export const projectBySlugQuery = groq`*[_type == "project" && slug.current == $
   year,
   categories[]->{ title, "slug": slug.current },
   thumbnail {
-    image {
-      alt,
-      hotspot,
-      crop,
-      asset,
-      "width": asset->metadata.dimensions.width,
-      "height": asset->metadata.dimensions.height
-    }
+    ${projectThumbnailFields}
   },
   gallery[]{
-    alt,
-    hotspot,
-    crop,
-    asset,
-    "width": asset->metadata.dimensions.width,
-    "height": asset->metadata.dimensions.height
+    ${projectGalleryFields}
   }
 }`

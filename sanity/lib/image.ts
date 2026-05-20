@@ -8,12 +8,17 @@ const imageBuilder = createImageUrlBuilder({
   dataset: dataset || '',
 })
 
-function hasAssetRef(source: Image | undefined): boolean {
+function assetRef(source: Image | undefined): string | null {
   const asset = source?.asset
-  if (!asset || typeof asset !== 'object') return false
-  if ('_ref' in asset && typeof asset._ref === 'string') return asset._ref.length > 0
-  if ('_id' in asset && typeof asset._id === 'string') return asset._id.length > 0
-  return false
+  if (!asset || typeof asset !== 'object') return null
+  if ('_ref' in asset && typeof asset._ref === 'string' && asset._ref) return asset._ref
+  if ('_id' in asset && typeof asset._id === 'string' && asset._id) return asset._id
+  return null
+}
+
+export function isSanityImageAsset(source: Image | undefined): boolean {
+  const ref = assetRef(source)
+  return Boolean(ref?.startsWith('image-'))
 }
 
 export type ImageUrlOptions = {
@@ -23,7 +28,7 @@ export type ImageUrlOptions = {
 }
 
 export const urlForImage = (source: Image | undefined, options?: ImageUrlOptions) => {
-  if (!hasAssetRef(source)) return undefined
+  if (!isSanityImageAsset(source)) return undefined
 
   let builder = imageBuilder
     .image(source!)

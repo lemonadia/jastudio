@@ -3,7 +3,7 @@
   flex-wrap: wrap;
   gap: 10px;
   padding: 0 40px;
-  align-items: baseline;
+  align-items: flex-end;
 }
 
 .project-list__item {
@@ -21,17 +21,23 @@
   text-decoration: none;
 }
 
+.project-card__link:hover img,
+.project-card__link:hover .ui-mux-loop--card {
+  opacity: 0.8;
+}
+
 .project-card__thumb {
   overflow: hidden;
 }
 
-.project-card__thumb img {
+.project-card__thumb img,
+.project-card__thumb .ui-mux-loop--card {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
   object-position: top;
-
+  transition: opacity 0.3s ease;
 }
 
 .project-card__thumb>span {

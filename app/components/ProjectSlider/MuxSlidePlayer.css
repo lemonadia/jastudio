@@ -1,0 +1,72 @@
+.project__video {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  max-width: 100%;
+}
+
+.project__mux-player {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  aspect-ratio: auto;
+  --controls: none;
+  --media-object-fit: contain;
+}
+
+.project__video-controls {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.project__video-mute {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: #000;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.project__video-mute:focus-visible {
+  outline: 1px solid #000;
+  outline-offset: 2px;
+}
+
+.project__video-progress {
+  flex: 1;
+  min-width: 0;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  touch-action: none;
+}
+
+.project__video-progress-fill {
+  height: 100%;
+  background: #000;
+  pointer-events: none;
+  transition: width 0.05s linear;
+}
+
+@media (max-width: 768px) {
+  .project__video-controls {
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
+    gap: 10px;
+  }
+}
