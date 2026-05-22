@@ -1,7 +1,9 @@
 .info {
   padding-bottom: 80px;
-  padding-top: 111px;
+  padding-top: 22px;
   font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.03em;
 
 }
 
@@ -24,6 +26,7 @@
   font-size: 12px;
   line-height: 1.4;
   margin: 0;
+  font-weight: 400;
 }
 
 .info__empty {
@@ -56,6 +59,6 @@
 
 @media (max-width: 768px) {
   .info {
-  padding-top: 171px;
+  padding-top: 102px;
   }
 }

@@ -71,7 +71,7 @@ ul {
 }
 
 .page {
-  min-height: calc(100vh - 89px);
+  min-height: 100vh;
 }
 
 
@@ -80,14 +80,32 @@ ul {
     padding: 0 30px;
   }
 
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a,
+  button,
+  [role='button'],
+  input,
+  label,
+  summary {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a:focus:not(:focus-visible),
+  button:focus:not(:focus-visible),
+  [role='button']:focus:not(:focus-visible) {
+    outline: none;
+  }
 }
 
 .home {
-  margin-top: 243px;
+  margin-top: 154px;
 }
 
 @media (max-width: 768px) {
   .home {
-    margin-top: 129px;
+    margin-top: 60px;
   }
 }

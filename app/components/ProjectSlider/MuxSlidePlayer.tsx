@@ -30,8 +30,21 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
   const [currentTime, setCurrentTime] = useState(0)
   /** Po metadanych trzymaj aspect wideo — wcześniej rozmiar daje poster (jak zdjęcie w slajderze). */
   const [videoDims, setVideoDims] = useState<{ w: number; h: number } | null>(null)
+  const [coarseTouch, setCoarseTouch] = useState(
+    () =>
+      typeof window !== 'undefined' &&
+      window.matchMedia('(hover: none) and (pointer: coarse)').matches,
+  )
+
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: none) and (pointer: coarse)')
+    const update = () => setCoarseTouch(mq.matches)
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
 
   const scheduleHideControls = useCallback(() => {
+    if (coarseTouch) return
     if (hideControlsTimeoutRef.current) {
       clearTimeout(hideControlsTimeoutRef.current)
     }
@@ -39,12 +52,13 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
       setControlsVisible(false)
       hideControlsTimeoutRef.current = null
     }, CONTROLS_HIDE_MS)
-  }, [])
+  }, [coarseTouch])
 
   const revealControls = useCallback(() => {
+    if (coarseTouch) return
     setControlsVisible(true)
     scheduleHideControls()
-  }, [scheduleHideControls])
+  }, [scheduleHideControls, coarseTouch])
 
   useEffect(() => {
     return () => {
@@ -115,57 +129,78 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
     [seekToRatio],
   )
 
-  const onMuxLoadedMetadata = useCallback((e: Event) => {
-    const el = e.currentTarget as MuxPlayerElement
-    const d = el.duration
-    const t = el.currentTime
-    if (Number.isFinite(d) && d > 0) {
-      setDuration(d)
-      setCurrentTime(t)
-      setProgress(t / d)
-    }
-    if (el.videoWidth > 0 && el.videoHeight > 0) {
-      setVideoDims({ w: el.videoWidth, h: el.videoHeight })
-    }
+  const ensurePlaying = useCallback(() => {
+    const el = playerRef.current
+    if (!el) return
+    void el.play().catch(() => {})
   }, [])
 
+  const onMuxLoadedMetadata = useCallback(
+    (e: Event) => {
+      const el = e.currentTarget as MuxPlayerElement
+      const d = el.duration
+      const t = el.currentTime
+      if (Number.isFinite(d) && d > 0) {
+        setDuration(d)
+        setCurrentTime(t)
+        setProgress(t / d)
+      }
+      if (el.videoWidth > 0 && el.videoHeight > 0) {
+        setVideoDims({ w: el.videoWidth, h: el.videoHeight })
+      }
+      ensurePlaying()
+    },
+    [ensurePlaying],
+  )
+
+  useEffect(() => {
+    if (!videoDims) return
+    ensurePlaying()
+  }, [videoDims, playbackId, ensurePlaying])
+
+  const hideControlsOnLeave = useCallback(() => {
+    if (coarseTouch) return
+    if (hideControlsTimeoutRef.current) {
+      clearTimeout(hideControlsTimeoutRef.current)
+      hideControlsTimeoutRef.current = null
+    }
+    setControlsVisible(false)
+  }, [coarseTouch])
+
   if (!playbackId) return null
+
+  const playerInFlow = Boolean(videoDims)
 
   return (
     <div className="project__video">
       <div
-        className={`project__video-frame${videoDims ? ' project__video-frame--video-sized' : ''}${controlsVisible ? ' project__video-frame--controls-visible' : ''}`}
-        style={
-          videoDims
-            ? { aspectRatio: `${videoDims.w} / ${videoDims.h}` }
-            : undefined
-        }
-        onPointerMove={revealControls}
-        onPointerEnter={revealControls}
-        onPointerDown={revealControls}
-        onPointerLeave={() => {
-          if (hideControlsTimeoutRef.current) {
-            clearTimeout(hideControlsTimeoutRef.current)
-            hideControlsTimeoutRef.current = null
-          }
-          setControlsVisible(false)
-        }}
+        className={`project__video-frame${coarseTouch ? ' project__video-frame--touch' : controlsVisible ? ' project__video-frame--controls-visible' : ''}`}
+        {...(coarseTouch
+          ? {}
+          : {
+              onPointerMove: revealControls,
+              onPointerEnter: revealControls,
+              onPointerDown: revealControls,
+              onPointerLeave: hideControlsOnLeave,
+            })}
       >
         <MuxPlayer
           ref={playerRef}
           key={playbackId}
-          className={`project__mux-player${videoDims ? ' project__mux-player--in-flow' : ' project__mux-player--preload'}`}
+          className={`project__mux-player${playerInFlow ? ' project__mux-player--in-flow' : ' project__mux-player--preload'}`}
           playbackId={playbackId}
           title={title}
           poster={muxGalleryPosterUrl(playbackId)}
           streamType="on-demand"
           autoPlay="muted"
           muted={muted}
+          loop
           playsInline
           preload="auto"
           accentColor="#000000"
           nohotkeys
           onLoadedMetadata={onMuxLoadedMetadata}
+          onCanPlay={ensurePlaying}
         />
 
         {!videoDims ? (

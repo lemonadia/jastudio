@@ -1,19 +1,23 @@
 .project__video {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
   max-width: 100%;
+  background: #fff;
 }
 
-/* Tylko obszar faktycznego wideo (nie cały slajd) — tu reagują zdarzenia myszy */
+/* Tylko obszar faktycznego wideo (nie cały slajd) */
 .project__video-frame {
   position: relative;
   display: inline-block;
   height: 100%;
   max-width: 100%;
   vertical-align: middle;
+  background: #fff;
 }
 
 /* Do czasu metadanych player nie ma jeszcze szerokości — poster trzyma ten sam układ co zdjęcie */
@@ -26,11 +30,14 @@
   max-width: 100%;
   object-fit: contain;
   user-select: none;
+  background: #fff;
 }
 
 .project__mux-player {
   --controls: none;
   --media-object-fit: contain;
+  --media-background-color: #fff;
+  background-color: #fff;
 }
 
 /* Ładuje się pod posterem, nie wpływa na szerokość ramki */
@@ -41,8 +48,12 @@
   z-index: 0;
   width: 100%;
   height: 100%;
-  opacity: 0;
+  opacity: 0.001;
   pointer-events: none;
+}
+
+.project__mux-player::part(media) {
+  background-color: #fff;
 }
 
 .project__mux-player--in-flow {
@@ -52,7 +63,6 @@
   height: 100%;
   width: auto;
   max-width: 100%;
-  aspect-ratio: auto;
   opacity: 1;
   transition: opacity 0.35s ease;
 }
@@ -71,7 +81,8 @@
   transition: opacity 0.25s ease;
 }
 
-.project__video-frame--controls-visible .project__video-controls {
+.project__video-frame--controls-visible .project__video-controls,
+.project__video-frame--touch .project__video-controls {
   opacity: 1;
   pointer-events: auto;
 }
@@ -95,8 +106,13 @@
 .project__video-progress {
   flex: 1;
   min-width: 0;
+  box-sizing: content-box;
   height: 2px;
+  padding: 14px 0;
+  margin: -14px 0;
+  border: none;
   background: rgba(0, 0, 0, 0.2);
+  background-clip: content-box;
   cursor: pointer;
   touch-action: none;
 }
@@ -114,5 +130,11 @@
     right: 30px;
     bottom: 30px;
     gap: 10px;
+  }
+
+  .project__video-progress {
+    padding: 20px 0;
+    margin: -20px 0;
+    background-color: rgba(0, 0, 0, 0.35);
   }
 }

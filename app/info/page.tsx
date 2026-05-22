@@ -1,3 +1,4 @@
+import FadeIn from '@/app/components/FadeIn/FadeIn'
 import Info, { type InfoData } from '@/app/components/Info/Info'
 import Header from '@/app/components/Header/Header'
 import { sanityFetch } from '@/sanity/lib/fetch'
@@ -17,7 +18,9 @@ export default async function InfoPage() {
   return (
     <main className="page">
       <Header />
-      <Info info={info} />
+      <FadeIn>
+        <Info info={info} />
+      </FadeIn>
     </main>
   )
 }

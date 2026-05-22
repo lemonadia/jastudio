@@ -15,6 +15,7 @@
 }
 
 .index-row__video-wrap {
+  position: relative;
   display: block;
   height: max(120px, 8vw);
   aspect-ratio: 4 / 5;
@@ -23,7 +24,17 @@
 }
 
 .ui-mux-loop--index {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
+  --controls: none;
+  --media-object-fit: cover;
+  --media-object-position: top center;
+}
+
+.ui-mux-loop--index::part(media) {
+  object-fit: cover;
+  object-position: top center;
 }

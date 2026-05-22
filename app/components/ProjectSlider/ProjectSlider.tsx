@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './ProjectSlider.css'
 
 const MuxSlidePlayer = dynamic(() => import('./MuxSlidePlayer'), { ssr: false })
@@ -39,6 +39,7 @@ export default function ProjectSlider({
   initialIndex = 0,
 }: Props) {
   const router = useRouter()
+  const [enterFade, setEnterFade] = useState(true)
   const [index, setIndex] = useState(() => {
     if (slides.length === 0) return 0
     const safe = Number.isFinite(initialIndex) ? initialIndex : 0
@@ -47,15 +48,27 @@ export default function ProjectSlider({
   const total = slides.length
   const current = slides[index]
 
+  const dismissEnterFade = useCallback(() => {
+    setEnterFade(false)
+  }, [])
+
+  useEffect(() => {
+    if (!enterFade) return
+    const t = window.setTimeout(dismissEnterFade, 700)
+    return () => window.clearTimeout(t)
+  }, [enterFade, dismissEnterFade])
+
   const goNext = useCallback(() => {
     if (total < 2) return
+    dismissEnterFade()
     setIndex((i) => (i + 1) % total)
-  }, [total])
+  }, [total, dismissEnterFade])
 
   const goPrev = useCallback(() => {
     if (total < 2) return
+    dismissEnterFade()
     setIndex((i) => (i - 1 + total) % total)
-  }, [total])
+  }, [total, dismissEnterFade])
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null)
 
@@ -114,7 +127,7 @@ export default function ProjectSlider({
   }, [router])
 
   return (
-    <div className="project">
+    <div className={`project${enterFade ? ' project--enter' : ''}`}>
       <header className="project__meta">
         <div className="project__meta-main">
           <h1 className="project__title">{title}</h1>

@@ -1,10 +1,10 @@
 .index-list {
   padding: 0 40px 80px;
-  margin-top: 243px;
+  margin-top: 154px;
 }
 
 .index-list__item {
-  margin-bottom: 60px;
+  margin-bottom: 100px;
   animation: ui-fade-in-up 0.65s cubic-bezier(0.25, 0.1, 0.25, 1) both;
   animation-delay: calc(var(--stagger, 0) * 35ms);
 }
@@ -70,7 +70,7 @@
   margin: 0 0 6px;
   font-weight: inherit;
   font-size: inherit;
-  line-height: 1.4;
+  line-height: 1;
   color: inherit;
   text-decoration: none;
 }
@@ -79,6 +79,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  line-height: 1;
 }
 
 .index-list__empty {
@@ -186,7 +187,7 @@
 
 @media (max-width: 768px) {
   .index-list {
-    margin-top: 129px;
+    margin-top: 60px;
   }
 
   .index-row__title {
