@@ -45,9 +45,9 @@ export default defineType({
       type: 'string',
     }),
     defineField({
-      name: 'downloadFile',
-      title: 'Download file',
-      type: 'file',
+      name: 'downloadLink',
+      title: 'Download link',
+      type: 'url',
     }),
   ],
   preview: {

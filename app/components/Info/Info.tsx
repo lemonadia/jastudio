@@ -10,7 +10,6 @@ export type InfoData = {
   instagramLink?: string | null
   downloadHeading?: string | null
   downloadUrl?: string | null
-  downloadFilename?: string | null
 }
 
 function normalizeInstagramHandle(raw: string): string {
@@ -70,7 +69,6 @@ export default function Info({ info }: { info: InfoData | null }) {
     instagramLink,
     downloadHeading,
     downloadUrl,
-    downloadFilename,
   } = info
 
   return (
@@ -106,11 +104,12 @@ export default function Info({ info }: { info: InfoData | null }) {
 
       {downloadHeading || downloadUrl ? (
         <section className="info__section">
-          {downloadHeading ? <h2 className="info__heading">{downloadHeading}</h2> : null}
           {downloadUrl ? (
-            <a href={downloadUrl} className="info__link" download={downloadFilename ?? true}>
-              {downloadFilename ?? 'Download'}
+            <a href={downloadUrl} className="info__link" download>
+              {downloadHeading?.trim() || 'Download'}
             </a>
+          ) : downloadHeading ? (
+            <p className="info__heading">{downloadHeading}</p>
           ) : null}
         </section>
       ) : null}

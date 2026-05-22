@@ -48,8 +48,7 @@ export const infoQuery = groq`*[_type == "info"][0]{
   instagramName,
   instagramLink,
   downloadHeading,
-  "downloadUrl": downloadFile.asset->url,
-  "downloadFilename": downloadFile.asset->originalFilename
+  "downloadUrl": downloadLink
 }`
 
 export const categoriesQuery = groq`*[_type == "category"] | order(title asc) {

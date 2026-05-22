@@ -13,7 +13,6 @@ export default defineConfig({
   apiVersion,
   schema,
   plugins: [
-    muxInput(),
     structureTool({
       structure: (S, context) =>
         S.list()
@@ -34,6 +33,9 @@ export default defineConfig({
               context,
             }),
           ]),
+    }),
+    muxInput({
+      tool: { title: 'Videos' },
     }),
     visionTool({ defaultApiVersion: apiVersion }),
   ],

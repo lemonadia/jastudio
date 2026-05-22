@@ -4,11 +4,12 @@
   gap: 10px;
   padding: 0 40px;
   align-items: flex-end;
+  margin-bottom: 60px;
 }
 
-.project-list__item {
-  animation: ui-fade-in-up 0.65s cubic-bezier(0.25, 0.1, 0.25, 1) both;
-  animation-delay: calc(var(--stagger, 0) * 35ms);
+.project-card__thumb {
+  animation: ui-fade-in 1.05s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  animation-delay: var(--fade-delay, 0ms);
 }
 
 .project-card {

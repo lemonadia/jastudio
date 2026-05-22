@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { CSSProperties, ReactNode } from 'react'
-import CmsImage from '@/app/components/CmsImage/CmsImage'
+import { randomFadeDelays } from '@/app/lib/randomStagger'
+import ProjectCardImage from '@/app/components/ProjectList/ProjectCardImage'
 import LoopingMuxVideo from '@/app/components/LoopingMuxVideo/LoopingMuxVideo'
 import { categoryTitlesForTiles } from '@/sanity/lib/categoriesForTiles'
 import { isSanityImageAsset } from '@/sanity/lib/image'
@@ -32,6 +33,8 @@ export default function ProjectList({ projects }: { projects: ProjectListItem[] 
     return <p className="project-list__empty">No projects yet. Add them in Sanity Studio.</p>
   }
 
+  const fadeDelays = randomFadeDelays(projects.length)
+
   return (
     <ul className="project-list">
       {projects.map((project, i) => (
@@ -40,7 +43,7 @@ export default function ProjectList({ projects }: { projects: ProjectListItem[] 
           className={`project-list__item${
             project.thumbnail?.size === 'big' ? ' project-list__item--big' : ''
           }`}
-          style={{ '--stagger': i } as CSSProperties}
+          style={{ '--fade-delay': `${fadeDelays[i] ?? 0}ms` } as CSSProperties}
         >
           <ProjectRow project={project} priority={i < 4} />
         </li>
@@ -80,7 +83,7 @@ function ProjectRow({ project, priority }: { project: ProjectListItem; priority?
     const hasImage = isSanityImageAsset(image ?? undefined)
 
     thumbContent = hasImage ? (
-      <CmsImage
+      <ProjectCardImage
         image={image}
         alt={(image?.alt as string | undefined) || alt}
         width={image?.width}

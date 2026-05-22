@@ -1,12 +1,10 @@
 .index-list {
-  padding: 0 40px 80px;
+  padding: 0 40px 40px;
   margin-top: 154px;
 }
 
 .index-list__item {
   margin-bottom: 100px;
-  animation: ui-fade-in-up 0.65s cubic-bezier(0.25, 0.1, 0.25, 1) both;
-  animation-delay: calc(var(--stagger, 0) * 35ms);
 }
 
 .index-row {
@@ -43,18 +41,20 @@
   display: block;
   color: inherit;
   flex-shrink: 0;
+  animation: ui-fade-in 1.05s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  animation-delay: var(--fade-delay, 0ms);
 }
 
 .index-row__image {
   display: block;
   height: max(120px, 8vw);
   width: auto;
-  opacity: 0;
-  transition: opacity 0.65s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-.index-row__image--loaded {
-  opacity: 1;
+.index-row__link:hover .index-row__image,
+.index-row__link:hover .ui-mux-loop--index {
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
 }
 
 .index-row__meta {

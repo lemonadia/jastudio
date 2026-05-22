@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
+import { randomFadeDelays } from '@/app/lib/randomStagger'
 import LoopingMuxVideo from '@/app/components/LoopingMuxVideo/LoopingMuxVideo'
 import { categoryTitlesForTiles } from '@/sanity/lib/categoriesForTiles'
 import { urlForImage } from '@/sanity/lib/image'
@@ -29,6 +30,7 @@ function renderMedia(
   j: number,
   project: IndexProject,
   projectHref: string | null,
+  fadeDelayMs: number,
   eager = false,
 ) {
   const alt =
@@ -51,16 +53,21 @@ function renderMedia(
 
   if (!thumb) return null
 
+  const fadeStyle = { '--fade-delay': `${fadeDelayMs}ms` } as CSSProperties
+
   return projectHref ? (
     <Link
       key={`${project._id}-${j}`}
       href={`${projectHref}?i=${j}`}
       className="index-row__link"
+      style={fadeStyle}
     >
       {thumb}
     </Link>
   ) : (
-    <div key={`${project._id}-${j}`}>{thumb}</div>
+    <div key={`${project._id}-${j}`} className="index-row__link" style={fadeStyle}>
+      {thumb}
+    </div>
   )
 }
 
@@ -93,6 +100,13 @@ export default function IndexList({ projects }: { projects: IndexProject[] }) {
     return <p className="index-list__empty">No projects yet. Add them in Sanity Studio.</p>
   }
 
+  const mediaCount = projects.reduce(
+    (n, p) => n + collectProjectMedia(p.thumbnail, p.gallery).length,
+    0,
+  )
+  const fadeDelays = randomFadeDelays(mediaCount)
+  let fadeSlot = 0
+
   return (
     <ul className="index-list">
       {projects.map((project, i) => {
@@ -106,13 +120,14 @@ export default function IndexList({ projects }: { projects: IndexProject[] }) {
         const categoryLabel = categoryTitlesForTiles(project.categories)
         const projectHref = project.slug ? `/project/${project.slug}` : null
         const meta = renderMeta(project, projectHref, categoryLabel ?? '')
+        const projectFadeDelays = media.map((_, j) => fadeDelays[fadeSlot + j] ?? 0)
+        fadeSlot += media.length
+
+        const renderWithDelay = (item: ProjectMediaItem, j: number, eager: boolean) =>
+          renderMedia(item, j, project, projectHref, projectFadeDelays[j] ?? 0, eager)
 
         return (
-          <li
-            key={project._id}
-            className="index-list__item"
-            style={{ '--stagger': i } as CSSProperties}
-          >
+          <li key={project._id} className="index-list__item">
             <article className="index-row">
               <span className="index-row__index" aria-hidden="true">
                 <span className="index-row__index-open">[</span>
@@ -125,21 +140,19 @@ export default function IndexList({ projects }: { projects: IndexProject[] }) {
                   <div className="index-desktop-split">
                     <div className="index-desktop-split__nine">
                       {firstRowMedia.map((item, j) =>
-                        renderMedia(item, j, project, projectHref, i === 0 && j < 6),
+                        renderWithDelay(item, j, i === 0 && j < 6),
                       )}
                     </div>
                     {meta}
                     <div className="index-desktop-split__more">
                       {moreMedia.map((item, j) =>
-                        renderMedia(item, j + FIRST_ROW_IMAGE_COUNT, project, projectHref),
+                        renderWithDelay(item, j + FIRST_ROW_IMAGE_COUNT, false),
                       )}
                     </div>
                   </div>
                 ) : (
                   <div className="index-desktop-inline">
-                    {media.map((item, j) =>
-                      renderMedia(item, j, project, projectHref, i === 0 && j < 6),
-                    )}
+                    {media.map((item, j) => renderWithDelay(item, j, i === 0 && j < 6))}
                     {meta}
                   </div>
                 )}
@@ -147,9 +160,7 @@ export default function IndexList({ projects }: { projects: IndexProject[] }) {
 
               <div className="index-row__mobile">
                 <div className="index-mobile-gallery">
-                  {media.map((item, j) =>
-                    renderMedia(item, j, project, projectHref, i === 0 && j < 6),
-                  )}
+                  {media.map((item, j) => renderWithDelay(item, j, i === 0 && j < 6))}
                 </div>
                 {meta}
               </div>
