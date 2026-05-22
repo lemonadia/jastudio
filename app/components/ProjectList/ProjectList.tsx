@@ -82,7 +82,7 @@ function ProjectRow({ project, priority }: { project: ProjectListItem; priority?
     const image = thumbnail?.image
     const hasImage = isSanityImageAsset(image ?? undefined)
 
-    thumbContent = hasImage ? (
+    thumbContent = hasImage && image ? (
       <ProjectCardImage
         image={image}
         alt={(image?.alt as string | undefined) || alt}
