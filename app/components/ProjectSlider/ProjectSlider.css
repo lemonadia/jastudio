@@ -1,7 +1,9 @@
 .project {
   position: relative;
-  height: 100vh;
   width: 100%;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   overflow: hidden;
   background: #fff;
 }
@@ -11,7 +13,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 2;
+  z-index: 10;
   pointer-events: none;
   padding: 40px;
   display: flex;
@@ -110,6 +112,26 @@
 }
 
 @media (max-width: 768px) {
+  html.project-page-lock,
+  body.project-page-lock {
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+  }
+
+  html.project-page-lock {
+    height: 100svh;
+    height: 100dvh;
+  }
+
+  body.project-page-lock {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100svh;
+    height: 100dvh;
+  }
+
   .project__meta {
     padding: 30px;
   }

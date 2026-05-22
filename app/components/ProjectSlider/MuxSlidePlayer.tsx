@@ -30,6 +30,7 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
   const [currentTime, setCurrentTime] = useState(0)
   /** Po metadanych trzymaj aspect wideo — wcześniej rozmiar daje poster (jak zdjęcie w slajderze). */
   const [videoDims, setVideoDims] = useState<{ w: number; h: number } | null>(null)
+  const [isPlaying, setIsPlaying] = useState(false)
   const [coarseTouch, setCoarseTouch] = useState(
     () =>
       typeof window !== 'undefined' &&
@@ -74,6 +75,7 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
     setDuration(0)
     setCurrentTime(0)
     setVideoDims(null)
+    setIsPlaying(false)
   }, [playbackId])
 
   useEffect(() => {
@@ -129,15 +131,26 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
     [seekToRatio],
   )
 
+  const readVideoDims = useCallback((el: MuxPlayerElement) => {
+    if (el.videoWidth > 0 && el.videoHeight > 0) {
+      return { w: el.videoWidth, h: el.videoHeight }
+    }
+    const media = el.media
+    if (media && media.videoWidth > 0 && media.videoHeight > 0) {
+      return { w: media.videoWidth, h: media.videoHeight }
+    }
+    return null
+  }, [])
+
   const ensurePlaying = useCallback(() => {
     const el = playerRef.current
     if (!el) return
+    if (el.muted !== muted) el.muted = muted
     void el.play().catch(() => {})
-  }, [])
+  }, [muted])
 
-  const onMuxLoadedMetadata = useCallback(
-    (e: Event) => {
-      const el = e.currentTarget as MuxPlayerElement
+  const syncFromPlayer = useCallback(
+    (el: MuxPlayerElement) => {
       const d = el.duration
       const t = el.currentTime
       if (Number.isFinite(d) && d > 0) {
@@ -145,18 +158,45 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
         setCurrentTime(t)
         setProgress(t / d)
       }
-      if (el.videoWidth > 0 && el.videoHeight > 0) {
-        setVideoDims({ w: el.videoWidth, h: el.videoHeight })
-      }
+      const dims = readVideoDims(el)
+      if (dims) setVideoDims(dims)
+    },
+    [readVideoDims],
+  )
+
+  const onMuxLoadedMetadata = useCallback(
+    (e: Event) => {
+      const el = e.currentTarget as MuxPlayerElement
+      syncFromPlayer(el)
       ensurePlaying()
     },
-    [ensurePlaying],
+    [ensurePlaying, syncFromPlayer],
+  )
+
+  const onMuxPlaying = useCallback(
+    (e: Event) => {
+      const el = e.currentTarget as MuxPlayerElement
+      setIsPlaying(true)
+      syncFromPlayer(el)
+    },
+    [syncFromPlayer],
   )
 
   useEffect(() => {
-    if (!videoDims) return
+    if (!coarseTouch) return
     ensurePlaying()
-  }, [videoDims, playbackId, ensurePlaying])
+    const retry = window.setInterval(ensurePlaying, 600)
+    const stop = window.setTimeout(() => window.clearInterval(retry), 8000)
+    return () => {
+      window.clearInterval(retry)
+      window.clearTimeout(stop)
+    }
+  }, [coarseTouch, playbackId, ensurePlaying])
+
+  useEffect(() => {
+    if (!videoDims && !isPlaying) return
+    ensurePlaying()
+  }, [videoDims, isPlaying, playbackId, ensurePlaying])
 
   const hideControlsOnLeave = useCallback(() => {
     if (coarseTouch) return
@@ -169,14 +209,22 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
 
   if (!playbackId) return null
 
-  const playerInFlow = Boolean(videoDims)
+  const playerInFlow = coarseTouch || Boolean(videoDims)
+  const showLayoutPoster = !coarseTouch && !videoDims
 
   return (
-    <div className="project__video">
+    <div
+      className={`project__video${coarseTouch ? ' project__video--touch' : controlsVisible ? ' project__video--controls-visible' : ''}`}
+    >
       <div
-        className={`project__video-frame${coarseTouch ? ' project__video-frame--touch' : controlsVisible ? ' project__video-frame--controls-visible' : ''}`}
+        className="project__video-frame"
         {...(coarseTouch
-          ? {}
+          ? {
+              onPointerDown: (e) => {
+                if ((e.target as HTMLElement).closest('.project__video-controls')) return
+                ensurePlaying()
+              },
+            }
           : {
               onPointerMove: revealControls,
               onPointerEnter: revealControls,
@@ -190,7 +238,7 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
           className={`project__mux-player${playerInFlow ? ' project__mux-player--in-flow' : ' project__mux-player--preload'}`}
           playbackId={playbackId}
           title={title}
-          poster={muxGalleryPosterUrl(playbackId)}
+          poster={coarseTouch ? undefined : muxGalleryPosterUrl(playbackId)}
           streamType="on-demand"
           autoPlay="muted"
           muted={muted}
@@ -201,9 +249,10 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
           nohotkeys
           onLoadedMetadata={onMuxLoadedMetadata}
           onCanPlay={ensurePlaying}
+          onPlaying={onMuxPlaying}
         />
 
-        {!videoDims ? (
+        {showLayoutPoster ? (
           <img
             className="project__video-poster"
             src={muxGalleryPosterUrl(playbackId)}
@@ -213,22 +262,10 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
             aria-hidden
           />
         ) : null}
+      </div>
 
-        <div className="project__video-controls">
-        <button
-          type="button"
-          className="project__video-mute"
-          onClick={(e) => {
-            e.stopPropagation()
-            toggleMute()
-            revealControls()
-          }}
-          aria-label={muted ? 'Turn sound on' : 'Turn sound off'}
-          aria-pressed={!muted}
-        >
-          {muted ? <IconMuted /> : <IconUnmuted />}
-        </button>
-
+      <div className="project__video-controls">
+        <div className="project__video-controls-inner">
         <div
           className="project__video-progress"
           role="slider"
@@ -261,6 +298,20 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
         >
           <div className="project__video-progress-fill" style={{ width: `${progress * 100}%` }} />
         </div>
+
+        <button
+          type="button"
+          className="project__video-mute"
+          onClick={(e) => {
+            e.stopPropagation()
+            toggleMute()
+            revealControls()
+          }}
+          aria-label={muted ? 'Turn sound on' : 'Turn sound off'}
+          aria-pressed={!muted}
+        >
+          {muted ? <IconMuted /> : <IconUnmuted />}
+        </button>
         </div>
       </div>
     </div>
@@ -269,18 +320,20 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
 
 function IconMuted() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-      <path d="M2 5.5h2L7 3v8L4 8.5H2V5.5z" stroke="currentColor" strokeWidth="1" />
-      <path d="M9.5 5l3 2-3 2M9.5 9l3-2-3-2" stroke="currentColor" strokeWidth="1" />
+    <svg width="16" height="13" viewBox="0 0 16 13" fill="none" aria-hidden>
+      <path d="M8 12.8008L3.2002 9.60059H0V3.2002H3.2002L8 0V12.8008Z" fill="currentColor" />
+      <path d="M10 3.90039L15 8.90039" stroke="currentColor" />
+      <path d="M10 8.90039L15 3.90039" stroke="currentColor" />
     </svg>
   )
 }
 
 function IconUnmuted() {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-      <path d="M2 5.5h2L7 3v8L4 8.5H2V5.5z" stroke="currentColor" strokeWidth="1" />
-      <path d="M9 4.5c1.2.9 2 2.2 2 3.5s-.8 2.6-2 3.5M10.5 6.5c.6.5 1 1.2 1 2s-.4 1.5-1 2" stroke="currentColor" strokeWidth="1" />
+    <svg width="15" height="13" viewBox="0 0 15 13" fill="none" aria-hidden>
+      <path d="M8 12.8008L3.2002 9.60059H0V3.2002H3.2002L8 0V12.8008Z" fill="currentColor" />
+      <path d="M11 3.40039V9.40039" stroke="currentColor" />
+      <path d="M14 2.40039V10.4004" stroke="currentColor" />
     </svg>
   )
 }
