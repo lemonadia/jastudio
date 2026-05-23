@@ -57,6 +57,13 @@
   opacity: 1;
 }
 
+/* Podczas hover na liście — kropka tylko na hoverowanym filtrze, nie na active */
+.category-list__items:has(.category-list__link:hover)
+  .category-list__link--active:not(:hover)
+  .category-list__bracket-dot {
+  opacity: 0;
+}
+
 
 @media (max-width: 768px) {
   .category-list__items {

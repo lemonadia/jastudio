@@ -15,7 +15,7 @@ export default function Footer() {
     <footer className="footer">
       <span className="footer__copy">© Jonathan Arundel Studio {year}</span>
       <a
-        href="https://okdeploy.pl"
+        href="https://ok-deploy.live"
         className="footer__credit"
         target="_blank"
         rel="noopener noreferrer"

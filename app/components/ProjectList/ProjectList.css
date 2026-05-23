@@ -8,7 +8,7 @@
 }
 
 .project-card__thumb {
-  animation: ui-fade-in 1.05s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  animation: ui-fade-in 1.15s cubic-bezier(0.25, 0.1, 0.25, 1) both;
   animation-delay: var(--fade-delay, 0ms);
 }
 

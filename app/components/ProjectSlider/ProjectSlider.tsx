@@ -108,19 +108,15 @@ export default function ProjectSlider({
 
   const handleBack = useCallback(() => {
     const ref = document.referrer
-    let fromSameSite = false
-
     if (ref) {
       try {
-        fromSameSite = new URL(ref).origin === window.location.origin
+        if (new URL(ref).origin === window.location.origin) {
+          router.back()
+          return
+        }
       } catch {
         /* ignore */
       }
-    }
-
-    if (fromSameSite || window.history.length > 2) {
-      router.back()
-      return
     }
 
     router.push('/')

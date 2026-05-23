@@ -33,7 +33,7 @@ export default function ProjectList({ projects }: { projects: ProjectListItem[] 
     return <p className="project-list__empty">No projects yet. Add them in Sanity Studio.</p>
   }
 
-  const fadeDelays = randomFadeDelays(projects.length)
+  const fadeDelays = randomFadeDelays(projects.length, 95)
 
   return (
     <ul className="project-list">
