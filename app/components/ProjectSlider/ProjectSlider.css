@@ -37,8 +37,13 @@
 
 .project__back {
   pointer-events: auto;
-  margin: 0;
-  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  margin: -14px -14px -14px 0;
+  padding: 14px;
   border: none;
   background: none;
   font: inherit;
@@ -47,6 +52,7 @@
   letter-spacing: inherit;
   line-height: 1;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .project__back:hover {
@@ -142,5 +148,12 @@
     position: fixed;
     padding: 30px;
     background: transparent;
+  }
+
+  .project__back {
+    min-width: 48px;
+    min-height: 48px;
+    margin: -16px -16px -16px 0;
+    padding: 16px;
   }
 }
