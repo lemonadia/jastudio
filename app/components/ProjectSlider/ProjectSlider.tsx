@@ -127,10 +127,8 @@ export default function ProjectSlider({
       <header className="project__meta">
         <div className="project__meta-main">
           <h1 className="project__title">{title}</h1>
-          <div className="project__meta-row">
-            {year ? <span className="project__year">{year}</span> : null}
-            {categories ? <span className="project__category">{categories}</span> : null}
-          </div>
+          {year ? <span className="project__year">{year}</span> : null}
+          {categories ? <span className="project__category">{categories}</span> : null}
         </div>
 
         <button type="button" className="project__back" onClick={handleBack}>
