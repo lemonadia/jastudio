@@ -49,6 +49,10 @@
   cursor: pointer;
 }
 
+.project__back:hover {
+  opacity: 0.6;
+}
+
 .project__title {
   font-weight: inherit;
   font-size: inherit;
