@@ -36,3 +36,8 @@
 .header__nav-link:hover {
   opacity: 0.6;
 }
+
+
+.header__logo {
+  letter-spacing: 0.08em;
+}
