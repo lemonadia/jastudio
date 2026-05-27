@@ -52,7 +52,6 @@ export default defineType({
       of: [
         defineArrayMember({
           type: 'image',
-          name: 'galleryImage',
           title: 'Image',
           options: { hotspot: true },
           fields: [{ name: 'alt', type: 'string', title: 'Alternative text' }],
