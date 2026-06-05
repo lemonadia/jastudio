@@ -1,4 +1,3 @@
-import CopyText from './CopyText'
 import './Info.css'
 
 export type InfoData = {
@@ -79,9 +78,9 @@ export default function Info({ info }: { info: InfoData | null }) {
         <section className="info__section">
           {contactHeading ? <h2 className="info__heading">{contactHeading}</h2> : null}
           {contactText ? (
-            <CopyText value={contactText} className="info__text">
+            <a href={`mailto:${contactText.trim()}`} className="info__link info__text">
               {contactText}
-            </CopyText>
+            </a>
           ) : null}
         </section>
       ) : null}
@@ -91,12 +90,17 @@ export default function Info({ info }: { info: InfoData | null }) {
           {instagramHeading ? <h2 className="info__heading">{instagramHeading}</h2> : null}
           {(() => {
             const label = instagramDisplayLabel(instagramName, instagramLink)
-            const copyValue = instagramCopyValue(instagramName, instagramLink)
-            if (!label || !copyValue) return null
+            const href = instagramCopyValue(instagramName, instagramLink)
+            if (!label || !href) return null
             return (
-              <CopyText value={copyValue} className="info__link">
+              <a
+                href={href}
+                className="info__link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {label}
-              </CopyText>
+              </a>
             )
           })()}
         </section>
@@ -105,7 +109,12 @@ export default function Info({ info }: { info: InfoData | null }) {
       {downloadHeading || downloadUrl ? (
         <section className="info__section">
           {downloadUrl ? (
-            <a href={downloadUrl} className="info__link" download>
+            <a
+              href={downloadUrl}
+              className="info__link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {downloadHeading?.trim() || 'Download'}
             </a>
           ) : downloadHeading ? (

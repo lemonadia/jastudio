@@ -1,6 +1,8 @@
 .project__video {
   position: relative;
-  z-index: 2;
+  /* No z-index on desktop: this must NOT form a stacking context, so the slider
+     nav arrows (z-index 1) can sit above the video media while the in-frame
+     controls (z-index 4) still sit above the arrows. */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -132,6 +134,14 @@
   background: #000;
   pointer-events: none;
   transition: width 0.05s linear;
+}
+
+/* On touch devices the video sits above the nav hit-areas so taps reach the
+   frame (play) and swiping handles slide navigation. */
+@media (hover: none) and (pointer: coarse) {
+  .project__video {
+    z-index: 2;
+  }
 }
 
 @media (max-width: 768px) {

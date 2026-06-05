@@ -38,8 +38,6 @@ const projectGalleryFields = groq`
   "videoAssetId": select(_type in ["mux.video", "galleryVideo"] => asset->assetId)
 `
 
-export const settingsQuery = groq`*[_type == "settings"][0]{ siteTitle }`
-
 export const infoQuery = groq`*[_type == "info"][0]{
   body,
   contactHeading,

@@ -48,6 +48,7 @@ export default defineType({
       name: 'downloadLink',
       title: 'Download link',
       type: 'url',
+      description: 'Link to a PDF (or other file). Opens in a new tab.',
     }),
   ],
   preview: {

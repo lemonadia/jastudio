@@ -15,7 +15,7 @@ Zobacz też `.env.example`.
 
 Potem: `npm install` → `npm run dev`.
 
-Studio: [http://localhost:3000/studio](http://localhost:3000/studio) — **Site settings** → *Site title*.
+Studio: [http://localhost:3000/studio](http://localhost:3000/studio) — **Info**, **Categories**, **Projects**.
 
 W Sanity Manage → **API → CORS** dodaj `http://localhost:3000`.
 
@@ -30,4 +30,4 @@ Kategorię „Video” dodaj w Studio jak zwykłą kategorię (Categories), jeś
 
 ## Stack
 
-Next.js (App Router), Tailwind, Sanity pod `/studio`, typ **settings** (singleton `siteTitle`).
+Next.js (App Router), Tailwind, Sanity pod `/studio` (typy: **info**, **category**, **project**).
