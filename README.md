@@ -17,7 +17,11 @@ Potem: `npm install` → `npm run dev`.
 
 Studio: [http://localhost:3000/studio](http://localhost:3000/studio) — **Info**, **Categories**, **Projects**.
 
-W Sanity Manage → **API → CORS** dodaj `http://localhost:3000`.
+W Sanity Manage → **API → CORS** dodaj:
+- `http://localhost:3000` (dev)
+- adres produkcyjny, np. `https://jastudio-iota.vercel.app` — **z włączonym „Allow credentials”** (inaczej Studio/Mux zwróci „Forbidden - origin is not allowed”)
+
+Albo z CLI: `npx sanity cors add https://twoja-domena.vercel.app --credentials`
 
 ### Mux (video)
 
