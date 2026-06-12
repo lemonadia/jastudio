@@ -41,7 +41,7 @@
   display: block;
   color: inherit;
   flex-shrink: 0;
-  animation: ui-fade-in 1.05s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+  animation: ui-fade-in 0.55s cubic-bezier(0.25, 0.1, 0.25, 1) both;
   animation-delay: var(--fade-delay, 0ms);
 }
 

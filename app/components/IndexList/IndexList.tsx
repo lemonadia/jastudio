@@ -104,7 +104,7 @@ export default function IndexList({ projects }: { projects: IndexProject[] }) {
     (n, p) => n + collectProjectMedia(p.thumbnail, p.gallery).length,
     0,
   )
-  const fadeDelays = randomFadeDelays(mediaCount)
+  const fadeDelays = randomFadeDelays(mediaCount, 28)
   let fadeSlot = 0
 
   return (
