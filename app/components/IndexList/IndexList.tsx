@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
-import { randomFadeDelays } from '@/app/lib/randomStagger'
+import { topDownRandomGroupFadeDelays } from '@/app/lib/randomStagger'
 import LoopingMuxVideo from '@/app/components/LoopingMuxVideo/LoopingMuxVideo'
 import { categoryTitlesForTiles } from '@/sanity/lib/categoriesForTiles'
 import { urlForImage } from '@/sanity/lib/image'
@@ -100,11 +100,10 @@ export default function IndexList({ projects }: { projects: IndexProject[] }) {
     return <p className="index-list__empty">No projects yet. Add them in Sanity Studio.</p>
   }
 
-  const mediaCount = projects.reduce(
-    (n, p) => n + collectProjectMedia(p.thumbnail, p.gallery).length,
-    0,
+  const groupSizes = projects.map(
+    (p) => collectProjectMedia(p.thumbnail, p.gallery).length,
   )
-  const fadeDelays = randomFadeDelays(mediaCount, 28)
+  const fadeDelays = topDownRandomGroupFadeDelays(groupSizes, 36, 65)
   let fadeSlot = 0
 
   return (

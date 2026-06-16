@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { CSSProperties, ReactNode } from 'react'
-import { randomFadeDelays } from '@/app/lib/randomStagger'
+import { chunkSizes, topDownRandomGroupFadeDelays } from '@/app/lib/randomStagger'
 import ProjectCardImage from '@/app/components/ProjectList/ProjectCardImage'
 import LoopingMuxVideo from '@/app/components/LoopingMuxVideo/LoopingMuxVideo'
 import { categoryTitlesForTiles } from '@/sanity/lib/categoriesForTiles'
@@ -33,7 +33,11 @@ export default function ProjectList({ projects }: { projects: ProjectListItem[] 
     return <p className="project-list__empty">No projects yet. Add them in Sanity Studio.</p>
   }
 
-  const fadeDelays = randomFadeDelays(projects.length, 95)
+  const fadeDelays = topDownRandomGroupFadeDelays(
+    chunkSizes(projects.length, 6),
+    52,
+    85,
+  )
 
   return (
     <ul className="project-list">

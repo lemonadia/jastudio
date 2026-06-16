@@ -111,7 +111,7 @@ export default function Info({ info }: { info: InfoData | null }) {
           {downloadUrl ? (
             <a
               href={downloadUrl}
-              className="info__link"
+              className="info__link info__link--download"
               target="_blank"
               rel="noopener noreferrer"
             >

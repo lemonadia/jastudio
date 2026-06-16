@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import CabinAnalytics from '@/app/components/CabinAnalytics/CabinAnalytics'
 import Footer from '@/app/components/Footer/Footer'
 import './globals.css'
 
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <CabinAnalytics />
         {children}
         <Footer />
       </body>

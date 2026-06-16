@@ -1,7 +1,6 @@
 import { sanityFetch } from '@/sanity/lib/fetch'
 import { allProjectsQuery, categoriesQuery } from '@/sanity/lib/queries'
 import CategoryList, { type CategoryItem } from '@/app/components/CategoryList/CategoryList'
-import FadeIn from '@/app/components/FadeIn/FadeIn'
 import Header from '@/app/components/Header/Header'
 import ProjectList, { type ProjectListItem } from '@/app/components/ProjectList/ProjectList'
 
@@ -37,9 +36,7 @@ export default async function Home() {
         </section>
 
         <section className="page__projects">
-          <FadeIn>
-            <ProjectList projects={projects} />
-          </FadeIn>
+          <ProjectList projects={projects} />
         </section>
       </div>
 

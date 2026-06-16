@@ -56,18 +56,21 @@
   opacity: 0.45;
 }
 
-.info__section a.info__link {
+.info__link {
+  transition: opacity 0.3s ease;
+}
+
+.info__link:hover {
+  opacity: 0.6;
+}
+
+.info__link--download {
   text-decoration: underline;
   text-underline-offset: 0.12em;
 }
 
-
 @media (max-width: 768px) {
   .info {
-  padding-top: 102px;
+    padding-top: 102px;
   }
-}
-
-.download {
-  text-decoration: underline;
 }
