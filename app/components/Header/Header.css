@@ -39,5 +39,25 @@
 
 
 .header__logo {
+  position: relative;
   letter-spacing: 0.08em;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.header__logo::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  bottom: -14px;
+  left: -24px;
+}
+
+@media (max-width: 768px) {
+  .header__logo::before {
+    top: -16px;
+    right: -16px;
+    bottom: -16px;
+    left: -28px;
+  }
 }

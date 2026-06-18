@@ -23,7 +23,7 @@ export default async function IndexPage() {
   return (
     <main className="page">
       <Header />
-      <IndexList projects={projects} />
+      <IndexList projects={projects} returnTo="/index" />
     </main>
   )
 }

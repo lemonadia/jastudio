@@ -82,11 +82,13 @@ export default async function ProjectPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ i?: string }>
+  searchParams: Promise<{ i?: string; from?: string }>
 }) {
   const { slug } = await params
-  const { i } = await searchParams
+  const { i, from } = await searchParams
   const parsed = i ? Number.parseInt(i, 10) : 0
+  const returnTo =
+    from && from.startsWith('/') && !from.startsWith('//') ? from.split('#')[0] : null
 
   const doc = await sanityFetch<ProjectDoc>({
     query: projectBySlugQuery,
@@ -113,6 +115,7 @@ export default async function ProjectPage({
       categories={categories ?? ''}
       slides={slides}
       initialIndex={initialIndex}
+      returnTo={returnTo}
     />
   )
 }

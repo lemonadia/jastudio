@@ -52,7 +52,7 @@ export default async function CategoryPage({
 
         <section className="page__projects">
           <FadeIn>
-            <ProjectList projects={projects} />
+            <ProjectList projects={projects} returnTo={`/${slug}`} />
           </FadeIn>
         </section>
       </div>

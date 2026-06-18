@@ -36,7 +36,7 @@ export default async function Home() {
         </section>
 
         <section className="page__projects">
-          <ProjectList projects={projects} />
+          <ProjectList projects={projects} returnTo="/" />
         </section>
       </div>
 

@@ -25,11 +25,23 @@ export type IndexProject = {
 
 const FIRST_ROW_IMAGE_COUNT = 9
 
+function projectHrefFor(
+  slug: string,
+  options?: { returnTo?: string; imageIndex?: number },
+): string {
+  const params = new URLSearchParams()
+  if (options?.returnTo) params.set('from', options.returnTo)
+  if (options?.imageIndex !== undefined) params.set('i', String(options.imageIndex))
+  const qs = params.toString()
+  return `/project/${slug}${qs ? `?${qs}` : ''}`
+}
+
 function renderMedia(
   item: ProjectMediaItem,
   j: number,
   project: IndexProject,
   projectHref: string | null,
+  returnTo: string | undefined,
   fadeDelayMs: number,
   eager = false,
 ) {
@@ -58,7 +70,7 @@ function renderMedia(
   return projectHref ? (
     <Link
       key={`${project._id}-${j}`}
-      href={`${projectHref}?i=${j}`}
+      href={projectHrefFor(project.slug as string, { returnTo, imageIndex: j })}
       className="index-row__link"
       style={fadeStyle}
     >
@@ -95,7 +107,13 @@ function renderMeta(
   )
 }
 
-export default function IndexList({ projects }: { projects: IndexProject[] }) {
+export default function IndexList({
+  projects,
+  returnTo,
+}: {
+  projects: IndexProject[]
+  returnTo?: string
+}) {
   if (!projects.length) {
     return <p className="index-list__empty">No projects yet. Add them in Sanity Studio.</p>
   }
@@ -117,13 +135,15 @@ export default function IndexList({ projects }: { projects: IndexProject[] }) {
         const moreMedia = hasMoreThanNine ? media.slice(FIRST_ROW_IMAGE_COUNT) : []
         const indexNumber = String(i + 1).padStart(2, '0')
         const categoryLabel = categoryTitlesForTiles(project.categories)
-        const projectHref = project.slug ? `/project/${project.slug}` : null
+        const projectHref = project.slug
+          ? projectHrefFor(project.slug, { returnTo })
+          : null
         const meta = renderMeta(project, projectHref, categoryLabel ?? '')
         const projectFadeDelays = media.map((_, j) => fadeDelays[fadeSlot + j] ?? 0)
         fadeSlot += media.length
 
         const renderWithDelay = (item: ProjectMediaItem, j: number, eager: boolean) =>
-          renderMedia(item, j, project, projectHref, projectFadeDelays[j] ?? 0, eager)
+          renderMedia(item, j, project, projectHref, returnTo, projectFadeDelays[j] ?? 0, eager)
 
         return (
           <li key={project._id} className="index-list__item">

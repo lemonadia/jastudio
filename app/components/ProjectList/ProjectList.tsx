@@ -28,7 +28,13 @@ function isVideoThumbnail(thumbnail?: ProjectThumbnail | null): boolean {
   return Boolean(muxPlaybackIdFromVideo(thumbnail?.video))
 }
 
-export default function ProjectList({ projects }: { projects: ProjectListItem[] }) {
+export default function ProjectList({
+  projects,
+  returnTo,
+}: {
+  projects: ProjectListItem[]
+  returnTo?: string
+}) {
   if (!projects.length) {
     return <p className="project-list__empty">No projects yet. Add them in Sanity Studio.</p>
   }
@@ -49,14 +55,22 @@ export default function ProjectList({ projects }: { projects: ProjectListItem[] 
           }`}
           style={{ '--fade-delay': `${fadeDelays[i] ?? 0}ms` } as CSSProperties}
         >
-          <ProjectRow project={project} priority={i < 4} />
+          <ProjectRow project={project} priority={i < 4} returnTo={returnTo} />
         </li>
       ))}
     </ul>
   )
 }
 
-function ProjectRow({ project, priority }: { project: ProjectListItem; priority?: boolean }) {
+function ProjectRow({
+  project,
+  priority,
+  returnTo,
+}: {
+  project: ProjectListItem
+  priority?: boolean
+  returnTo?: string
+}) {
   const size = project.thumbnail?.size ?? 'medium'
   const thumbnail = project.thumbnail
   const alt = project.title || 'Project thumbnail'
@@ -107,7 +121,14 @@ function ProjectRow({ project, priority }: { project: ProjectListItem; priority?
   return (
     <article className="project-card">
       {project.slug ? (
-        <Link href={`/project/${project.slug}`} className="project-card__link">
+        <Link
+          href={
+            returnTo
+              ? `/project/${project.slug}?from=${encodeURIComponent(returnTo)}`
+              : `/project/${project.slug}`
+          }
+          className="project-card__link"
+        >
           {thumb}
         </Link>
       ) : (

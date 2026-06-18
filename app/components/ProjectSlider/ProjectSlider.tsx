@@ -29,6 +29,7 @@ type Props = {
   categories: string
   slides: Slide[]
   initialIndex?: number
+  returnTo?: string | null
 }
 
 export default function ProjectSlider({
@@ -37,6 +38,7 @@ export default function ProjectSlider({
   categories,
   slides,
   initialIndex = 0,
+  returnTo = null,
 }: Props) {
   const router = useRouter()
   const [enterFade, setEnterFade] = useState(true)
@@ -107,20 +109,18 @@ export default function ProjectSlider({
   }, [])
 
   const handleBack = useCallback(() => {
-    const ref = document.referrer
-    if (ref) {
-      try {
-        if (new URL(ref).origin === window.location.origin) {
-          router.back()
-          return
-        }
-      } catch {
-        /* ignore */
-      }
+    if (window.history.length > 1) {
+      router.back()
+      return
+    }
+
+    if (returnTo) {
+      router.push(returnTo)
+      return
     }
 
     router.push('/')
-  }, [router])
+  }, [router, returnTo])
 
   return (
     <div className={`project${enterFade ? ' project--enter' : ''}`}>
