@@ -50,6 +50,11 @@ export default defineType({
       type: 'url',
       description: 'Link to a PDF (or other file). Opens in a new tab.',
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO',
+      type: 'seo',
+    }),
   ],
   preview: {
     prepare() {

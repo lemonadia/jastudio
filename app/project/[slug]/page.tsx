@@ -9,6 +9,7 @@ import {
   type GalleryItem,
   type ProjectThumbnail,
 } from '@/sanity/lib/projectMedia'
+import { metadataFromSeo, type SeoData } from '@/app/lib/metadata'
 import { urlForImage } from '@/sanity/lib/image'
 
 type ProjectDoc = {
@@ -18,6 +19,7 @@ type ProjectDoc = {
   categories?: { title?: string | null }[] | null
   thumbnail?: ProjectThumbnail | null
   gallery?: GalleryItem[] | null
+  seo?: SeoData
 } | null
 
 export const revalidate = 60
@@ -43,7 +45,10 @@ export async function generateMetadata({
       params: { slug },
     })
     if (!doc?.title) return {}
-    return { title: doc.title }
+    return metadataFromSeo(doc.seo, {
+      title: doc.title,
+      image: doc.thumbnail?.image ?? undefined,
+    })
   } catch {
     return {}
   }

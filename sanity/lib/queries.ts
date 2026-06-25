@@ -38,6 +38,18 @@ const projectGalleryFields = groq`
   "videoAssetId": select(_type in ["mux.video", "galleryVideo"] => asset->assetId)
 `
 
+const seoFields = groq`
+  seo {
+    title,
+    description,
+    image {
+      asset,
+      hotspot,
+      crop
+    }
+  }
+`
+
 export const infoQuery = groq`*[_type == "info"][0]{
   body,
   contactHeading,
@@ -46,7 +58,15 @@ export const infoQuery = groq`*[_type == "info"][0]{
   instagramName,
   instagramLink,
   downloadHeading,
-  "downloadUrl": downloadLink
+  "downloadUrl": downloadLink,
+  ${seoFields}
+}`
+
+export const textPageBySlugQuery = groq`*[_type == "textPage" && slug.current == $slug][0]{
+  title,
+  body,
+  "slug": slug.current,
+  ${seoFields}
 }`
 
 export const categoriesQuery = groq`*[_type == "category"] | order(title asc) {
@@ -58,7 +78,8 @@ export const categoriesQuery = groq`*[_type == "category"] | order(title asc) {
 export const categoryBySlugQuery = groq`*[_type == "category" && slug.current == $slug][0]{
   _id,
   title,
-  "slug": slug.current
+  "slug": slug.current,
+  ${seoFields}
 }`
 
 export const allProjectsQuery = groq`*[_type == "project"] | order(orderRank asc, year desc, title asc) {
@@ -112,5 +133,6 @@ export const projectBySlugQuery = groq`*[_type == "project" && slug.current == $
   },
   gallery[]{
     ${projectGalleryFields}
-  }
+  },
+  ${seoFields}
 }`

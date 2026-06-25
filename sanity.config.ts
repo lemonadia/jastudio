@@ -21,6 +21,7 @@ export default defineConfig({
             S.listItem()
               .title('Info')
               .child(S.document().schemaType('info').documentId('info')),
+            S.documentTypeListItem('textPage').title('Text pages'),
             S.divider(),
             S.documentTypeListItem('category').title('Categories'),
             orderableDocumentListDeskItem({

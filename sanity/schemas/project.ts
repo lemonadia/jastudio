@@ -63,6 +63,11 @@ export default defineType({
         }),
       ],
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO',
+      type: 'seo',
+    }),
   ],
   preview: {
     select: { title: 'title', slug: 'slug.current', media: 'thumbnail.image' },

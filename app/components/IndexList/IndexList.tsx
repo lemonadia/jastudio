@@ -25,6 +25,14 @@ export type IndexProject = {
 
 const FIRST_ROW_IMAGE_COUNT = 9
 
+function chunkMedia<T>(items: T[], size: number): T[][] {
+  const chunks: T[][] = []
+  for (let i = 0; i < items.length; i += size) {
+    chunks.push(items.slice(i, i + size))
+  }
+  return chunks
+}
+
 function projectHrefFor(
   slug: string,
   options?: { returnTo?: string; imageIndex?: number },
@@ -128,11 +136,8 @@ export default function IndexList({
     <ul className="index-list">
       {projects.map((project, i) => {
         const media = collectProjectMedia(project.thumbnail, project.gallery)
-        const hasMoreThanNine = media.length > FIRST_ROW_IMAGE_COUNT
-        const firstRowMedia = hasMoreThanNine
-          ? media.slice(0, FIRST_ROW_IMAGE_COUNT)
-          : media
-        const moreMedia = hasMoreThanNine ? media.slice(FIRST_ROW_IMAGE_COUNT) : []
+        const imageRows = chunkMedia(media, FIRST_ROW_IMAGE_COUNT)
+        const hasMultipleRows = imageRows.length > 1
         const indexNumber = String(i + 1).padStart(2, '0')
         const categoryLabel = categoryTitlesForTiles(project.categories)
         const projectHref = project.slug
@@ -155,19 +160,22 @@ export default function IndexList({
               </span>
 
               <div className="index-row__desktop">
-                {hasMoreThanNine ? (
+                {hasMultipleRows ? (
                   <div className="index-desktop-split">
                     <div className="index-desktop-split__nine">
-                      {firstRowMedia.map((item, j) =>
+                      {imageRows[0].map((item, j) =>
                         renderWithDelay(item, j, i === 0 && j < 6),
                       )}
                     </div>
                     {meta}
-                    <div className="index-desktop-split__more">
-                      {moreMedia.map((item, j) =>
-                        renderWithDelay(item, j + FIRST_ROW_IMAGE_COUNT, false),
-                      )}
-                    </div>
+                    {imageRows.slice(1).map((row, rowIndex) => (
+                      <div key={rowIndex} className="index-desktop-split__more">
+                        {row.map((item, j) => {
+                          const globalIndex = (rowIndex + 1) * FIRST_ROW_IMAGE_COUNT + j
+                          return renderWithDelay(item, globalIndex, false)
+                        })}
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <div className="index-desktop-inline">
@@ -178,9 +186,14 @@ export default function IndexList({
               </div>
 
               <div className="index-row__mobile">
-                <div className="index-mobile-gallery">
-                  {media.map((item, j) => renderWithDelay(item, j, i === 0 && j < 6))}
-                </div>
+                {imageRows.map((row, rowIndex) => (
+                  <div key={rowIndex} className="index-mobile-gallery">
+                    {row.map((item, j) => {
+                      const globalIndex = rowIndex * FIRST_ROW_IMAGE_COUNT + j
+                      return renderWithDelay(item, globalIndex, i === 0 && globalIndex < 6)
+                    })}
+                  </div>
+                ))}
                 {meta}
               </div>
             </article>
