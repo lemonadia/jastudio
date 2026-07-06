@@ -186,14 +186,9 @@ export default function IndexList({
               </div>
 
               <div className="index-row__mobile">
-                {imageRows.map((row, rowIndex) => (
-                  <div key={rowIndex} className="index-mobile-gallery">
-                    {row.map((item, j) => {
-                      const globalIndex = rowIndex * FIRST_ROW_IMAGE_COUNT + j
-                      return renderWithDelay(item, globalIndex, i === 0 && globalIndex < 6)
-                    })}
-                  </div>
-                ))}
+                <div className="index-mobile-gallery">
+                  {media.map((item, j) => renderWithDelay(item, j, i === 0 && j < 6))}
+                </div>
                 {meta}
               </div>
             </article>

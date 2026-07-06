@@ -134,11 +134,11 @@
 }
 
 .index-mobile-gallery {
-  display: grid;
-  grid-template-columns: repeat(9, minmax(0, max-content));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 5px;
   width: 100%;
-  max-width: 100%;
 }
 
 .index-row__mobile>.index-row__meta {
@@ -193,16 +193,5 @@
 
   .index-row__title {
     margin: 0;
-  }
-
-  .index-mobile-gallery {
-    grid-template-columns: repeat(9, minmax(0, 1fr));
-  }
-
-  .index-mobile-gallery .index-row__image {
-    width: 100%;
-    height: auto;
-    max-height: 72px;
-    object-fit: cover;
   }
 }

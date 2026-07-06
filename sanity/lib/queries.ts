@@ -50,6 +50,10 @@ const seoFields = groq`
   }
 `
 
+export const siteSettingsQuery = groq`*[_type == "siteSettings"][0]{
+  ${seoFields}
+}`
+
 export const infoQuery = groq`*[_type == "info"][0]{
   body,
   contactHeading,

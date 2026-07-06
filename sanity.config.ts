@@ -19,6 +19,9 @@ export default defineConfig({
           .title('Content')
           .items([
             S.listItem()
+              .title('Site settings')
+              .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+            S.listItem()
               .title('Info')
               .child(S.document().schemaType('info').documentId('info')),
             S.documentTypeListItem('textPage').title('Text pages'),
