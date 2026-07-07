@@ -38,3 +38,10 @@
   object-fit: cover;
   object-position: top center;
 }
+
+@media (max-width: 1280px) {
+  .index-row__mobile .index-row__video-wrap {
+    height: 86px;
+    width: calc(86px * 4 / 5);
+  }
+}
