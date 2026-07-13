@@ -63,6 +63,10 @@ export const infoQuery = groq`*[_type == "info"][0]{
   instagramLink,
   downloadHeading,
   "downloadUrl": downloadLink,
+  legal {
+    text,
+    link
+  },
   ${seoFields}
 }`
 

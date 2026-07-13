@@ -51,6 +51,23 @@ export default defineType({
       description: 'Link to a PDF (or other file). Opens in a new tab.',
     }),
     defineField({
+      name: 'legal',
+      title: 'Legal',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'text',
+          title: 'Legal text',
+          type: 'string',
+        }),
+        defineField({
+          name: 'link',
+          title: 'Legal link',
+          type: 'url',
+        }),
+      ],
+    }),
+    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'seo',
