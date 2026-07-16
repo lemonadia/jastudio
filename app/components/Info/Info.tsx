@@ -128,12 +128,7 @@ export default function Info({ info }: { info: InfoData | null }) {
       {legal?.text || legal?.link ? (
         <section className="info__section">
           {legal.link ? (
-            <a
-              href={legal.link}
-              className="info__link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href={legal.link} className="info__link">
               {legal.text?.trim() || 'Legal'}
             </a>
           ) : legal.text ? (
