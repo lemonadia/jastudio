@@ -9,6 +9,7 @@ import './MuxSlidePlayer.css'
 type Props = {
   playbackId: string
   title: string
+  credits?: string | null
 }
 
 function formatTime(seconds: number): string {
@@ -20,7 +21,7 @@ function formatTime(seconds: number): string {
 
 const CONTROLS_HIDE_MS = 2800
 
-export default function MuxSlidePlayer({ playbackId, title }: Props) {
+export default function MuxSlidePlayer({ playbackId, title, credits = null }: Props) {
   const playerRef = useRef<MuxPlayerElement>(null)
   const hideControlsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [controlsVisible, setControlsVisible] = useState(false)
@@ -264,6 +265,7 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
         ) : null}
       </div>
 
+      <div className={`project__video-footer${credits ? ' project__video-footer--credits' : ''}`}>
       <div className="project__video-controls">
         <div className="project__video-controls-inner">
         <div
@@ -313,6 +315,9 @@ export default function MuxSlidePlayer({ playbackId, title }: Props) {
           {muted ? <IconMuted /> : <IconUnmuted />}
         </button>
         </div>
+      </div>
+
+      {credits ? <p className="project__credits">{credits}</p> : null}
       </div>
     </div>
   )

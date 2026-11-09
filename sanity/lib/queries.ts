@@ -135,6 +135,7 @@ export const projectBySlugQuery = groq`*[_type == "project" && slug.current == $
   title,
   "slug": slug.current,
   year,
+  credits,
   categories[]->{ title, "slug": slug.current },
   thumbnail {
     ${projectThumbnailFields}

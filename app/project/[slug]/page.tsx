@@ -16,6 +16,7 @@ type ProjectDoc = {
   title?: string | null
   slug?: string | null
   year?: number | null
+  credits?: string | null
   categories?: { title?: string | null }[] | null
   thumbnail?: ProjectThumbnail | null
   gallery?: GalleryItem[] | null
@@ -117,6 +118,7 @@ export default async function ProjectPage({
     <ProjectSlider
       title={doc.title}
       year={doc.year}
+      credits={doc.credits?.trim() || null}
       categories={categories ?? ''}
       slides={slides}
       initialIndex={initialIndex}

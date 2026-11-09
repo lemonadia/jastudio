@@ -26,6 +26,8 @@ export type Slide = SlideImage | SlideVideo
 type Props = {
   title: string
   year?: number | null
+  /** Tylko na slajdach wideo */
+  credits?: string | null
   categories: string
   slides: Slide[]
   initialIndex?: number
@@ -35,6 +37,7 @@ type Props = {
 export default function ProjectSlider({
   title,
   year,
+  credits = null,
   categories,
   slides,
   initialIndex = 0,
@@ -159,7 +162,12 @@ export default function ProjectSlider({
         ) : null}
 
         {current?.type === 'video' ? (
-          <MuxSlidePlayer key={current.playbackId} playbackId={current.playbackId} title={current.alt} />
+          <MuxSlidePlayer
+            key={current.playbackId}
+            playbackId={current.playbackId}
+            title={current.alt}
+            credits={credits}
+          />
         ) : null}
 
         {!current ? <p className="project__empty">No media in gallery.</p> : null}

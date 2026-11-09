@@ -64,6 +64,25 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'credits',
+      title: 'Credits',
+      type: 'text',
+      rows: 3,
+      description:
+        'Shown at the bottom of the project page, only on video slides (under the progress bar on mobile).',
+      hidden: ({ document }) => {
+        const doc = document as
+          | { thumbnail?: { mediaType?: string }; gallery?: { _type?: string }[] }
+          | undefined
+        const hasVideo =
+          doc?.thumbnail?.mediaType === 'video' ||
+          (doc?.gallery ?? []).some(
+            (item) => item?._type === 'galleryVideo' || item?._type === 'mux.video',
+          )
+        return !hasVideo
+      },
+    }),
+    defineField({
       name: 'seo',
       title: 'SEO',
       type: 'seo',
