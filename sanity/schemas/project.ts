@@ -68,8 +68,6 @@ export default defineType({
       title: 'Credits',
       type: 'text',
       rows: 3,
-      description:
-        'Shown at the bottom of the project page, only on video slides (under the progress bar on mobile).',
       hidden: ({ document }) => {
         const doc = document as
           | { thumbnail?: { mediaType?: string }; gallery?: { _type?: string }[] }
